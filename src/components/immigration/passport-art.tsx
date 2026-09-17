@@ -16,7 +16,7 @@ export function PassportArt({ className }: { className?: string }) {
       </g>
       <g transform="translate(58 14) rotate(-10)">
         <rect width="76" height="100" rx="7" fill="url(#pp)" stroke="#8fc3a0" strokeOpacity=".35" />
-        <text x="38" y="24" textAnchor="middle" fontSize="9" letterSpacing="1.5" fill="#d9c98f" fontFamily="sans-serif" fontWeight="700">PASSPORT</text>
+        <text x="38" y="24" textAnchor="middle" fontSize="9" letterSpacing="1.5" fill="#d9c98f" fontFamily="inherit" fontWeight="700">PASSPORT</text>
         <circle cx="38" cy="58" r="16" fill="none" stroke="#d9c98f" strokeWidth="1.6" />
         <ellipse cx="38" cy="58" rx="7" ry="16" fill="none" stroke="#d9c98f" strokeWidth="1.2" />
         <path d="M22 58 H54 M25 50 H51 M25 66 H51" stroke="#d9c98f" strokeWidth="1.2" />

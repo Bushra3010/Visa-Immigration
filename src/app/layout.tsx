@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Lato } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+// Single typeface for every page (matches the MakeMyTrip-style design reference).
+// Lato ships 300/400/700/900: Tailwind medium→400, semibold/bold→700, extrabold/black→900.
+const lato = Lato({ variable: "--font-lato", subsets: ["latin"], weight: ["300", "400", "700", "900"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className={`${lato.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>
   );

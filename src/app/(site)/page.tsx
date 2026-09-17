@@ -5,6 +5,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { CountryFlag } from "@/components/site/country-flag";
+import { DestinationRail } from "@/components/site/destination-rail";
 import { OffersSection } from "@/components/site/offers-section";
 import { TravelSearch } from "@/components/travel/travel-search";
 import { VISA_CATEGORIES } from "@/lib/content/categories";
@@ -228,38 +229,9 @@ export default function HomePage() {
             </div>
             <Link href="/countries" className="flex items-center gap-2 text-[15px] font-bold text-accent-500">VIEW ALL <ArrowRight className="size-4" /></Link>
           </div>
-          <ul className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-            {COUNTRIES.map((c) => (
-              <li key={c.slug}>
-                <Link href={`/countries/${c.slug}`} className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-white transition hover:border-brand-200 hover:shadow-md">
-                  <span className="relative block aspect-[16/9] overflow-hidden border-b border-line bg-canvas">
-                    <CountryFlag isoCode={c.isoCode} name={c.name} className="size-full transition-transform duration-300 group-hover:scale-105" />
-                  </span>
-                  <span className="flex items-center justify-between gap-2 px-4 py-3">
-                    <span className="min-w-0">
-                      <span className="block truncate text-[16px] font-semibold text-ink group-hover:text-brand-600">{c.name}</span>
-                      <span className="block text-[13px] text-ink-soft">{c.region}</span>
-                    </span>
-                    <ArrowRight className="size-4 shrink-0 text-muted transition group-hover:translate-x-0.5 group-hover:text-brand-600" />
-                  </span>
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link href="/countries" className="group flex h-full flex-col overflow-hidden rounded-xl border border-dashed border-brand-200 text-brand-600 hover:bg-brand-50">
-                <span className="grid aspect-[16/9] place-items-center border-b border-dashed border-brand-200 bg-brand-50/60">
-                  <Globe className="size-10" strokeWidth={1.2} />
-                </span>
-                <span className="flex items-center justify-between gap-2 px-4 py-3">
-                  <span>
-                    <span className="block text-[16px] font-semibold">Other destinations</span>
-                    <span className="block text-[13px] text-ink-soft">Explore more countries</span>
-                  </span>
-                  <ArrowRight className="size-4 shrink-0" />
-                </span>
-              </Link>
-            </li>
-          </ul>
+          <div className="mt-5">
+            <DestinationRail countries={COUNTRIES.map((c) => ({ slug: c.slug, name: c.name, region: c.region, isoCode: c.isoCode, photo: countryPhoto(c.slug) }))} />
+          </div>
         </section>
 
         {/* Visa category shortcuts (PRD §5.2) */}

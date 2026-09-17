@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-jakarta);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-lato), "Lato", system-ui, sans-serif;
+  /* Reference codes use the same typeface, with tabular digits. */
+  --font-mono: var(--font-lato), "Lato", system-ui, sans-serif;
 }
 
 @theme {
@@ -37,6 +38,7 @@ html {
 }
 
 body {
+  font-feature-settings: "lnum";
   background: var(--color-canvas);
   color: var(--color-ink);
 }
@@ -53,4 +55,20 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* Form controls don't inherit the page font by default. */
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+.font-mono {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* Destination rail: shifts by one full set (50% of the track + half the gap). */
+@keyframes rail {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 6px)); }
 }

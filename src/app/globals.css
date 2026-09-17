@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-jakarta);
+  --font-mono: var(--font-geist-mono);
+}
+
+@theme {
+  --color-ink: #0f1b2d;
+  --color-ink-soft: #3d4a5c;
+  --color-muted: #6b7686;
+  --color-line: #e3e7ee;
+  --color-surface: #ffffff;
+  --color-canvas: #f6f7fa;
+
+  /* Brand green (matches the NewVisa logo) */
+  --color-brand-50: #edf7f0;
+  --color-brand-100: #d4ecdb;
+  --color-brand-200: #a9d8b6;
+  --color-brand-500: #2b8a4b;
+  --color-brand-600: #1f6f3c;
+  --color-brand-700: #195c32;
+  --color-brand-900: #0e3520;
+
+  /* Action blue (search / primary booking actions) */
+  --color-accent-50: #eaf3ff;
+  --color-accent-500: #0b6fe8;
+  --color-accent-600: #0a5ec5;
+
+  --color-success: #1a7f4b;
+  --color-warning: #b7791f;
+  --color-danger: #c53030;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+@keyframes flag-sway {
+  0%, 100% { transform: perspective(600px) rotateY(0deg) skewY(0deg); }
+  50% { transform: perspective(600px) rotateY(-8deg) skewY(1.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}

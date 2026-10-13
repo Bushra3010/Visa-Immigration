@@ -7,7 +7,7 @@ import { StatCard } from "@/components/app/table";
 import { buttonClass } from "@/components/ui/button";
 import { Card, EmptyState, Notice } from "@/components/ui/primitives";
 import { requireViewer } from "@/lib/auth";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, formatMoney } from "@/lib/utils";
 
@@ -15,6 +15,7 @@ export const metadata: Metadata = { title: "My dashboard" };
 
 export default async function DashboardPage({ searchParams }: PageProps<"/dashboard">) {
   const viewer = await requireViewer();
+  const { countryBySlug } = await getContent();
   const { passwordUpdated } = await searchParams;
   const supabase = await createClient();
 
@@ -38,7 +39,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
             <PlaneTakeoff className="size-8" />
             <div>
               <p className="text-lg font-semibold">Your visa process is complete. Plan your journey</p>
-              <p className="text-sm text-brand-100">Application {a.code} · {COUNTRY_BY_SLUG.get(a.destination_country)?.name ?? a.destination_country}</p>
+              <p className="text-sm text-brand-100">Application {a.code} · {countryBySlug.get(a.destination_country)?.name ?? a.destination_country}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -65,7 +66,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
                 <li key={a.id}>
                   <Link href={`/dashboard/applications/${a.code}`} className="block rounded-xl border border-line bg-white p-4 hover:border-brand-200">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="font-medium">{COUNTRY_BY_SLUG.get(a.destination_country)?.name ?? a.destination_country}</p>
+                      <p className="font-medium">{countryBySlug.get(a.destination_country)?.name ?? a.destination_country}</p>
                       <StatusBadge status={a.status} />
                     </div>
                     <p className="mt-1 text-xs text-muted">{a.code} · Updated {formatDate(a.updated_at)}</p>

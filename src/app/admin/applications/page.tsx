@@ -6,9 +6,8 @@ import { DataTable, Td } from "@/components/app/table";
 import { buttonClass } from "@/components/ui/button";
 import { Select } from "@/components/ui/fields";
 import { requireSection } from "@/lib/auth";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { SERVICE_BY_SLUG } from "@/lib/content/visa-services";
 import { APPLICATION_STATUSES } from "@/lib/immigration/status";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, humanize } from "@/lib/utils";
 
@@ -16,6 +15,7 @@ export const metadata: Metadata = { title: "Applications" };
 
 export default async function AdminApplicationsPage({ searchParams }: PageProps<"/admin/applications">) {
   await requireSection("applications");
+  const { countryBySlug, serviceBySlug } = await getContent();
   const { status } = await searchParams;
   const supabase = await createClient();
   let query = supabase
@@ -46,7 +46,7 @@ export default async function AdminApplicationsPage({ searchParams }: PageProps<
             <tr key={a.id}>
               <Td><Link href={`/admin/applications/${a.code}`} className="font-mono font-medium text-brand-600">{a.code}</Link>{a.ready_to_travel && <p className="text-xs text-success">Ready to travel</p>}</Td>
               <Td className="text-xs">{customer?.full_name}<br /><span className="text-muted">{customer?.email}</span></Td>
-              <Td className="text-xs">{COUNTRY_BY_SLUG.get(a.destination_country)?.name}<br />{a.visa_service_slug ? SERVICE_BY_SLUG.get(a.visa_service_slug)?.title : "—"}</Td>
+              <Td className="text-xs">{countryBySlug.get(a.destination_country)?.name}<br />{a.visa_service_slug ? serviceBySlug.get(a.visa_service_slug)?.title : "—"}</Td>
               <Td className="text-xs">{(a.counsellor as unknown as { full_name: string } | null)?.full_name ?? "—"}</Td>
               <Td className="text-xs">{pending} with customer · {toReview} to review</Td>
               <Td><StatusBadge status={a.status} /></Td>

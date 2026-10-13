@@ -8,8 +8,8 @@ import { CountryFlag } from "@/components/site/country-flag";
 import { DestinationRail } from "@/components/site/destination-rail";
 import { OffersSection } from "@/components/site/offers-section";
 import { TravelSearch } from "@/components/travel/travel-search";
-import { VISA_CATEGORIES } from "@/lib/content/categories";
-import { COUNTRIES } from "@/lib/content/countries";
+import type { VisaCategory } from "@/lib/content/categories";
+import { getContent } from "@/lib/content/store";
 import { COUNTRY_SHORT_NAMES, countryPhoto } from "@/lib/content/country-photos";
 
 const HERO_IMAGE = "/Images/hero.png";
@@ -42,15 +42,17 @@ const POPULAR_SERVICE_BLURBS: Record<string, string> = {
   work: "Explore global career opportunities",
   visitor: "Travel the world with ease",
 };
-const POPULAR_SERVICES = [
-  ...["student", "work", "visitor"].map((slug) => VISA_CATEGORIES.find((c) => c.slug === slug)!),
-  ...VISA_CATEGORIES.filter((c) => !POPULAR_SERVICE_BLURBS[c.slug]),
+/** Featured categories first, then the rest in CMS order. */
+const popularServices = (categories: VisaCategory[]) => [
+  ...Object.keys(POPULAR_SERVICE_BLURBS).flatMap((slug) => categories.filter((c) => c.slug === slug)),
+  ...categories.filter((c) => !POPULAR_SERVICE_BLURBS[c.slug]),
 ];
 
 const shell = "mx-auto w-full max-w-[1360px] px-4 xl:px-0";
 const card = "mt-6 rounded-2xl border border-line/70 bg-white px-5 pb-6 pt-5 shadow-[0_2px_16px_rgba(15,27,45,0.06)] sm:px-8";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { countries, categories } = await getContent();
   return (
     <div className="bg-[#f2f4f7] pb-10 md:pb-16">
       <section className="relative">
@@ -173,8 +175,8 @@ export default function HomePage() {
             <Link href="/countries" className="flex items-center gap-1 text-[14px] font-medium text-brand-600">View All <ChevronRight className="size-4" /></Link>
           </div>
           <ul className="-mx-4 mt-3 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none]">
-            {COUNTRIES.map((c) => {
-              const photo = countryPhoto(c.slug);
+            {countries.map((c) => {
+              const photo = c.image ?? countryPhoto(c.slug);
               return (
                 <li key={c.slug} className="w-[calc((100vw-64px)/5)] min-w-[64px] shrink-0 snap-start">
                   <Link href={`/countries/${c.slug}`} className="block overflow-hidden rounded-lg bg-white shadow-[0_2px_10px_rgba(15,27,45,0.08)]">
@@ -203,7 +205,7 @@ export default function HomePage() {
         <section aria-labelledby="m-services-heading" className="mt-6 md:hidden">
           <h2 id="m-services-heading" className="text-[19px] font-bold text-ink">Popular Visa Services</h2>
           <ul className="-mx-4 mt-3 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none]">
-            {POPULAR_SERVICES.map((cat) => {
+            {popularServices(categories).map((cat) => {
               const Icon = CATEGORY_ICONS[cat.slug] ?? IdCard;
               return (
                 <li key={cat.slug} className="w-[190px] shrink-0 snap-start">
@@ -230,7 +232,7 @@ export default function HomePage() {
             <Link href="/countries" className="flex items-center gap-2 text-[15px] font-bold text-accent-500">VIEW ALL <ArrowRight className="size-4" /></Link>
           </div>
           <div className="mt-5">
-            <DestinationRail countries={COUNTRIES.map((c) => ({ slug: c.slug, name: c.name, region: c.region, isoCode: c.isoCode, photo: countryPhoto(c.slug) }))} />
+            <DestinationRail countries={countries.map((c) => ({ slug: c.slug, name: c.name, region: c.region, isoCode: c.isoCode, photo: c.image ?? countryPhoto(c.slug) }))} />
           </div>
         </section>
 
@@ -244,7 +246,7 @@ export default function HomePage() {
             <Link href="/visa" className="flex items-center gap-2 text-[15px] font-bold text-accent-500">ALL VISA SERVICES <ArrowRight className="size-4" /></Link>
           </div>
           <ul className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {VISA_CATEGORIES.map((cat) => {
+            {categories.map((cat) => {
               const Icon = CATEGORY_ICONS[cat.slug] ?? IdCard;
               return (
                 <li key={cat.slug}>

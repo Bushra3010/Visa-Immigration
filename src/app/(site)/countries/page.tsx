@@ -4,8 +4,7 @@ import { CountryFlag } from "@/components/site/country-flag";
 import { CtaBand } from "@/components/site/cta-band";
 import { PageHero } from "@/components/site/content-blocks";
 import { Container, Section } from "@/components/ui/primitives";
-import { COUNTRIES } from "@/lib/content/countries";
-import { servicesForCountry } from "@/lib/content/visa-services";
+import { getContent } from "@/lib/content/store";
 
 export const metadata: Metadata = {
   title: "Immigration Destinations",
@@ -13,13 +12,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/countries" },
 };
 
-export default function CountriesPage() {
+export default async function CountriesPage() {
+  const { countries, servicesForCountry } = await getContent();
   return (
     <>
       <PageHero eyebrow="Destinations" title="Choose your destination" description="Compare immigration pathways and find the visa that fits your goals." />
       <Section>
         <Container className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {COUNTRIES.map((c) => (
+          {countries.map((c) => (
             <Link key={c.slug} href={`/countries/${c.slug}`} className="group rounded-xl border border-line bg-white p-6 hover:border-brand-200 hover:shadow-md">
               <div className="flex items-start gap-3">
                 <span className="mt-0.5 block h-7 w-11 shrink-0 overflow-hidden rounded border border-line">

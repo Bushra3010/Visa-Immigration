@@ -6,9 +6,8 @@ import { DataTable, Td } from "@/components/app/table";
 import { buttonClass } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/fields";
 import { requireSection } from "@/lib/auth";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
 import { LEAD_STATUSES } from "@/lib/immigration/status";
-import { COUNTRY_OPTIONS } from "@/lib/leads/options";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, humanize } from "@/lib/utils";
 
@@ -17,6 +16,7 @@ const PAGE_SIZE = 25;
 
 export default async function LeadsPage({ searchParams }: PageProps<"/admin/leads">) {
   await requireSection("leads");
+  const { countryBySlug, countryOptions } = await getContent();
   const sp = await searchParams;
   const str = (k: string) => (typeof sp[k] === "string" ? (sp[k] as string) : "");
   const page = Math.max(1, Number(str("page")) || 1);
@@ -44,7 +44,7 @@ export default async function LeadsPage({ searchParams }: PageProps<"/admin/lead
       <form className="mb-4 grid gap-2 sm:grid-cols-5">
         <Input name="q" placeholder="Search name, email, mobile, ID" defaultValue={str("q")} className="sm:col-span-2" />
         <Select name="status" defaultValue={str("status")}><option value="">All statuses</option>{LEAD_STATUSES.map((s) => <option key={s} value={s}>{humanize(s)}</option>)}</Select>
-        <Select name="country" defaultValue={str("country")}><option value="">All countries</option>{COUNTRY_OPTIONS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}</Select>
+        <Select name="country" defaultValue={str("country")}><option value="">All countries</option>{countryOptions.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}</Select>
         <div className="flex gap-2">
           <Select name="followup" defaultValue={str("followup")}><option value="">Any follow-up</option><option value="due">Follow-up due</option></Select>
           <button className={buttonClass("primary", "md")}>Filter</button>
@@ -55,7 +55,7 @@ export default async function LeadsPage({ searchParams }: PageProps<"/admin/lead
           <tr key={l.id}>
             <Td><Link href={`/admin/leads/${l.id}`} className="font-medium text-brand-600">{l.full_name}</Link><p className="font-mono text-xs text-muted">{l.code}</p></Td>
             <Td className="text-xs">{l.mobile}<br />{l.email}</Td>
-            <Td className="text-xs">{COUNTRY_BY_SLUG.get(l.destination_country ?? "")?.name ?? "—"}<br />{l.visa_type ? humanize(l.visa_type) : "—"}</Td>
+            <Td className="text-xs">{countryBySlug.get(l.destination_country ?? "")?.name ?? "—"}<br />{l.visa_type ? humanize(l.visa_type) : "—"}</Td>
             <Td><StatusBadge status={l.eligibility_status} /></Td>
             <Td className="text-xs">{humanize(l.source)}</Td>
             <Td className="text-xs">{(l.counsellor as unknown as { full_name: string } | null)?.full_name ?? <span className="text-warning">Unassigned</span>}</Td>

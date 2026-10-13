@@ -9,10 +9,9 @@ import { Field, Input, Select, Textarea } from "@/components/ui/fields";
 import { Card } from "@/components/ui/primitives";
 import { createTravelRequirement, requestDocument, updateApplication } from "@/lib/admin/actions";
 import { requireSection } from "@/lib/auth";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { SERVICE_BY_SLUG } from "@/lib/content/visa-services";
 import { APPLICATION_STATUSES, DOCUMENT_TYPES } from "@/lib/immigration/status";
 import { canAccess } from "@/lib/roles";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, humanize } from "@/lib/utils";
 
@@ -20,6 +19,7 @@ export const metadata: Metadata = { title: "Application" };
 
 export default async function AdminApplicationPage({ params }: PageProps<"/admin/applications/[code]">) {
   const viewer = await requireSection("applications");
+  const { countryBySlug, serviceBySlug } = await getContent();
   const { code } = await params;
   const supabase = await createClient();
   const { data: app } = await supabase
@@ -42,7 +42,7 @@ export default async function AdminApplicationPage({ params }: PageProps<"/admin
     <>
       <PageHeader
         title={`${app.code} · ${customer.full_name}`}
-        description={<>{COUNTRY_BY_SLUG.get(app.destination_country)?.name}{app.visa_service_slug && ` · ${SERVICE_BY_SLUG.get(app.visa_service_slug)?.title}`} · Counsellor: {(app.counsellor as unknown as { full_name: string } | null)?.full_name ?? "Unassigned"}{lead && <> · Lead <Link href={`/admin/leads/${lead.id}`} className="text-brand-600">{lead.code}</Link></>}</>}
+        description={<>{countryBySlug.get(app.destination_country)?.name}{app.visa_service_slug && ` · ${serviceBySlug.get(app.visa_service_slug)?.title}`} · Counsellor: {(app.counsellor as unknown as { full_name: string } | null)?.full_name ?? "Unassigned"}{lead && <> · Lead <Link href={`/admin/leads/${lead.id}`} className="text-brand-600">{lead.code}</Link></>}</>}
         actions={<StatusBadge status={app.status} />}
       />
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">

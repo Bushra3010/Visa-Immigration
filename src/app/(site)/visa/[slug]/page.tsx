@@ -6,25 +6,24 @@ import { CtaBand } from "@/components/site/cta-band";
 import { ButtonLink } from "@/components/ui/button";
 import { Notice } from "@/components/ui/primitives";
 import { Container } from "@/components/ui/primitives";
-import { CATEGORY_BY_SLUG } from "@/lib/content/categories";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { SERVICE_BY_SLUG, VISA_SERVICES } from "@/lib/content/visa-services";
+import { getContent } from "@/lib/content/store";
 import { site } from "@/lib/site";
 
-export const dynamicParams = false;
+// Visa pages added in the CMS after the build render on first visit.
+export const dynamicParams = true;
 
-export function generateStaticParams() {
-  return VISA_SERVICES.map((s) => ({ slug: s.slug }));
+export async function generateStaticParams() {
+  return (await getContent()).services.map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/visa/[slug]">): Promise<Metadata> {
-  const service = SERVICE_BY_SLUG.get((await params).slug);
+  const service = (await getContent()).serviceBySlug.get((await params).slug);
   if (!service) return {};
   return {
-    title: `${service.title} — Eligibility, Documents & Process`,
-    description: service.overview,
+    title: service.seo?.title ?? `${service.title} — Eligibility, Documents & Process`,
+    description: service.seo?.description ?? service.overview,
     alternates: { canonical: `/visa/${service.slug}` },
-    openGraph: { title: service.title, description: service.overview },
+    openGraph: { title: service.seo?.title ?? service.title, description: service.seo?.description ?? service.overview },
   };
 }
 
@@ -41,10 +40,11 @@ const SECTIONS = [
 ];
 
 export default async function VisaServicePage({ params }: PageProps<"/visa/[slug]">) {
-  const service = SERVICE_BY_SLUG.get((await params).slug);
+  const { serviceBySlug, countryBySlug, categoryBySlug } = await getContent();
+  const service = serviceBySlug.get((await params).slug);
   if (!service) notFound();
-  const country = COUNTRY_BY_SLUG.get(service.countrySlug);
-  const category = CATEGORY_BY_SLUG.get(service.categorySlug);
+  const country = countryBySlug.get(service.countrySlug);
+  const category = categoryBySlug.get(service.categorySlug);
   const query = `country=${service.countrySlug}&visa=${service.categorySlug}`;
 
   const requirementRows = [
@@ -73,6 +73,7 @@ export default async function VisaServicePage({ params }: PageProps<"/visa/[slug
         eyebrow={`${country?.name} · ${category?.name}`}
         title={service.title}
         description={service.overview}
+        image={service.image}
         breadcrumbs={[
           { href: "/", label: "Home" },
           { href: "/visa", label: "Visa services" },

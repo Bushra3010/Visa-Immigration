@@ -4,12 +4,19 @@ import type { ReactNode } from "react";
 import type { Faq } from "@/lib/content/countries";
 import { Container } from "@/components/ui/primitives";
 
-export function PageHero({ eyebrow, title, description, breadcrumbs, children }: {
-  eyebrow?: string; title: string; description?: string; breadcrumbs?: { href?: string; label: string }[]; children?: ReactNode;
+export function PageHero({ eyebrow, title, description, breadcrumbs, image, children }: {
+  eyebrow?: string; title: string; description?: string; breadcrumbs?: { href?: string; label: string }[]; image?: string; children?: ReactNode;
 }) {
   return (
-    <section className="border-b border-line bg-gradient-to-br from-brand-900 to-brand-700 py-12 text-white sm:py-16">
-      <Container>
+    <section className="relative overflow-hidden border-b border-line bg-gradient-to-br from-brand-900 to-brand-700 py-12 text-white sm:py-16">
+      {image && (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element -- CMS photo from Supabase Storage, decorative */}
+          <img src={image} alt="" aria-hidden className="absolute inset-0 size-full object-cover" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-brand-900/90 via-brand-900/70 to-brand-900/30" />
+        </>
+      )}
+      <Container className="relative">
         {breadcrumbs && <div className="mb-6"><Breadcrumbs items={breadcrumbs} /></div>}
         {eyebrow && <p className="text-sm font-semibold uppercase tracking-wider text-brand-200">{eyebrow}</p>}
         <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>

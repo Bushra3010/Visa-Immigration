@@ -1,7 +1,7 @@
 "use server";
 
 import { getViewer } from "@/lib/auth";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
+import { getContent } from "@/lib/content/store";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { fieldErrorsFrom, type FormState } from "@/lib/forms";
 import { notify, notifyInApp } from "@/lib/notifications";
@@ -71,7 +71,7 @@ export async function submitEligibility(_prev: FormState<LeadResult>, formData: 
     return SAVE_FAILED;
   }
 
-  const country = COUNTRY_BY_SLUG.get(input.destination.preferredCountry)?.name ?? input.destination.preferredCountry;
+  const country = (await getContent()).countryBySlug.get(input.destination.preferredCountry)?.name ?? input.destination.preferredCountry;
   await Promise.all([
     notify({
       template: "eligibility_submitted",

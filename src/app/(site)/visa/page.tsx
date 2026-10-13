@@ -3,9 +3,7 @@ import Link from "next/link";
 import { PageHero } from "@/components/site/content-blocks";
 import { CtaBand } from "@/components/site/cta-band";
 import { Badge, Container, Section } from "@/components/ui/primitives";
-import { CATEGORY_BY_SLUG, VISA_CATEGORIES } from "@/lib/content/categories";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { VISA_SERVICES } from "@/lib/content/visa-services";
+import { getContent } from "@/lib/content/store";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -15,9 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function VisaServicesPage({ searchParams }: PageProps<"/visa">) {
-  const { category } = await searchParams;
-  const active = typeof category === "string" && CATEGORY_BY_SLUG.has(category) ? category : null;
-  const services = active ? VISA_SERVICES.filter((s) => s.categorySlug === active) : VISA_SERVICES;
+  const [{ category }, content] = await Promise.all([searchParams, getContent()]);
+  const { categories, categoryBySlug, countryBySlug } = content;
+  const active = typeof category === "string" && categoryBySlug.has(category) ? category : null;
+  const services = active ? content.services.filter((s) => s.categorySlug === active) : content.services;
 
   return (
     <>
@@ -26,7 +25,7 @@ export default async function VisaServicesPage({ searchParams }: PageProps<"/vis
         <Container>
           <div className="flex flex-wrap gap-2" role="list" aria-label="Filter by category">
             <Link href="/visa" className={cn("rounded-full px-3 py-1.5 text-sm ring-1 ring-line", !active ? "bg-brand-600 text-white ring-brand-600" : "bg-white")}>All</Link>
-            {VISA_CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <Link key={c.slug} href={`/visa?category=${c.slug}`} className={cn("rounded-full px-3 py-1.5 text-sm ring-1 ring-line", active === c.slug ? "bg-brand-600 text-white ring-brand-600" : "bg-white")}>
                 {c.name}
               </Link>
@@ -42,8 +41,8 @@ export default async function VisaServicesPage({ searchParams }: PageProps<"/vis
                 <li key={s.slug}>
                   <Link href={`/visa/${s.slug}`} className="block h-full rounded-xl border border-line bg-white p-5 hover:border-brand-200 hover:shadow-md">
                     <div className="flex gap-2">
-                      <Badge tone="brand">{COUNTRY_BY_SLUG.get(s.countrySlug)?.name}</Badge>
-                      <Badge>{CATEGORY_BY_SLUG.get(s.categorySlug)?.name}</Badge>
+                      <Badge tone="brand">{countryBySlug.get(s.countrySlug)?.name}</Badge>
+                      <Badge>{categoryBySlug.get(s.categorySlug)?.name}</Badge>
                     </div>
                     <p className="mt-3 text-lg font-semibold text-ink">{s.title}</p>
                     <p className="mt-1 line-clamp-3 text-sm text-ink-soft">{s.overview}</p>

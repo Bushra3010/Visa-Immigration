@@ -9,7 +9,7 @@ import { Notice } from "@/components/ui/primitives";
 import { fieldErrorsFrom, idleState } from "@/lib/forms";
 import { submitEligibility } from "@/lib/leads/actions";
 import {
-  COUNTRY_OPTIONS, FUNDS_OPTIONS, INCOME_OPTIONS, LANGUAGE_TEST_OPTIONS, OBJECTIVE_OPTIONS, QUALIFICATION_OPTIONS,
+  FUNDS_OPTIONS, INCOME_OPTIONS, LANGUAGE_TEST_OPTIONS, OBJECTIVE_OPTIONS, QUALIFICATION_OPTIONS, type Option,
 } from "@/lib/leads/options";
 import { ELIGIBILITY_STEP_ORDER, eligibilitySteps, type EligibilityStepKey } from "@/lib/leads/schemas";
 import { cn } from "@/lib/utils";
@@ -38,7 +38,7 @@ const emptyValues = (defaults: { country?: string; objective?: string }): Values
   consent: {},
 });
 
-export function EligibilityForm({ defaultCountry, defaultObjective }: { defaultCountry?: string; defaultObjective?: string }) {
+export function EligibilityForm({ countryOptions, defaultCountry, defaultObjective }: { countryOptions: Option[]; defaultCountry?: string; defaultObjective?: string }) {
   const [step, setStep] = useState(0);
   const [values, setValues] = useState<Values>(() => emptyValues({ country: defaultCountry, objective: defaultObjective }));
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -162,7 +162,7 @@ export function EligibilityForm({ defaultCountry, defaultObjective }: { defaultC
           )}
           {key === "destination" && (
             <>
-              {select("preferredCountry", "Preferred country", COUNTRY_OPTIONS, true)}
+              {select("preferredCountry", "Preferred country", countryOptions, true)}
               {text("preferredCity", "Preferred city (optional)")}
               {select("objective", "Immigration objective", OBJECTIVE_OPTIONS, true)}
             </>
@@ -215,7 +215,7 @@ export function EligibilityForm({ defaultCountry, defaultObjective }: { defaultC
               <dl className="grid gap-2 rounded-xl bg-canvas p-4 text-sm sm:grid-cols-2">
                 <div><dt className="text-muted">Name</dt><dd className="font-medium">{values.personal.fullName}</dd></div>
                 <div><dt className="text-muted">Email</dt><dd className="font-medium">{values.personal.email}</dd></div>
-                <div><dt className="text-muted">Destination</dt><dd className="font-medium">{COUNTRY_OPTIONS.find((c) => c.value === values.destination.preferredCountry)?.label}</dd></div>
+                <div><dt className="text-muted">Destination</dt><dd className="font-medium">{countryOptions.find((c) => c.value === values.destination.preferredCountry)?.label}</dd></div>
                 <div><dt className="text-muted">Objective</dt><dd className="font-medium">{OBJECTIVE_OPTIONS.find((o) => o.value === values.destination.objective)?.label}</dd></div>
               </dl>
               <label className="flex gap-3 text-sm text-ink-soft">

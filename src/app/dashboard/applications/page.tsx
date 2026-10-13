@@ -5,9 +5,8 @@ import { StatusBadge } from "@/components/app/status-badge";
 import { DataTable, Td } from "@/components/app/table";
 import { buttonClass } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/primitives";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { SERVICE_BY_SLUG } from "@/lib/content/visa-services";
 import { requireViewer } from "@/lib/auth";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
 
@@ -15,6 +14,7 @@ export const metadata: Metadata = { title: "My applications" };
 
 export default async function ApplicationsPage() {
   await requireViewer(); // also stops DB queries when not signed in / not configured
+  const { countryBySlug, serviceBySlug } = await getContent();
   const supabase = await createClient();
   const { data } = await supabase
     .from("applications")
@@ -29,8 +29,8 @@ export default async function ApplicationsPage() {
           {data.map((a) => (
             <tr key={a.code}>
               <Td><Link href={`/dashboard/applications/${a.code}`} className="font-mono font-medium text-brand-600">{a.code}</Link></Td>
-              <Td>{COUNTRY_BY_SLUG.get(a.destination_country)?.name ?? a.destination_country}</Td>
-              <Td>{(a.visa_service_slug && SERVICE_BY_SLUG.get(a.visa_service_slug)?.title) ?? "—"}</Td>
+              <Td>{countryBySlug.get(a.destination_country)?.name ?? a.destination_country}</Td>
+              <Td>{(a.visa_service_slug && serviceBySlug.get(a.visa_service_slug)?.title) ?? "—"}</Td>
               <Td>{(a.counsellor as unknown as { full_name: string } | null)?.full_name ?? "Being assigned"}</Td>
               <Td><StatusBadge status={a.status} /></Td>
               <Td className="max-w-56 text-ink-soft">{a.next_action ?? "—"}</Td>

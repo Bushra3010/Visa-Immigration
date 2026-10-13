@@ -5,9 +5,8 @@ import { PageHero } from "@/components/site/content-blocks";
 import { CtaBand } from "@/components/site/cta-band";
 import { ButtonLink } from "@/components/ui/button";
 import { Badge, Container, Section } from "@/components/ui/primitives";
-import { CATEGORY_BY_SLUG, SERVICE_NAV } from "@/lib/content/categories";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { servicesForCategories } from "@/lib/content/visa-services";
+import { SERVICE_NAV, type VisaCategory } from "@/lib/content/categories";
+import { getContent } from "@/lib/content/store";
 
 // Top-level service landing pages: /work-abroad, /study-abroad, ... (PRD §5.1)
 export const dynamicParams = false;
@@ -21,14 +20,16 @@ const findService = (slug: string) => SERVICE_NAV.find((s) => s.href === `/${slu
 export async function generateMetadata({ params }: PageProps<"/[service]">): Promise<Metadata> {
   const nav = findService((await params).service);
   if (!nav) return {};
-  const cats = nav.categories.map((c) => CATEGORY_BY_SLUG.get(c)!);
+  const { categoryBySlug } = await getContent();
+  const cats = nav.categories.map((c) => categoryBySlug.get(c)).filter((c): c is VisaCategory => !!c);
   return { title: nav.label, description: cats.map((c) => c.description).join(" "), alternates: { canonical: nav.href } };
 }
 
 export default async function ServiceLandingPage({ params }: PageProps<"/[service]">) {
   const nav = findService((await params).service);
   if (!nav) notFound();
-  const categories = nav.categories.map((c) => CATEGORY_BY_SLUG.get(c)!);
+  const { categoryBySlug, countryBySlug, servicesForCategories } = await getContent();
+  const categories = nav.categories.map((c) => categoryBySlug.get(c)).filter((c): c is VisaCategory => !!c);
   const services = servicesForCategories(nav.categories);
 
   return (
@@ -47,7 +48,7 @@ export default async function ServiceLandingPage({ params }: PageProps<"/[servic
               {services.map((s) => (
                 <li key={s.slug}>
                   <Link href={`/visa/${s.slug}`} className="block h-full rounded-xl border border-line bg-white p-5 hover:border-brand-200 hover:shadow-md">
-                    <Badge tone="brand">{COUNTRY_BY_SLUG.get(s.countrySlug)?.name}</Badge>
+                    <Badge tone="brand">{countryBySlug.get(s.countrySlug)?.name}</Badge>
                     <p className="mt-3 text-lg font-semibold">{s.title}</p>
                     <p className="mt-1 line-clamp-3 text-sm text-ink-soft">{s.overview}</p>
                   </Link>

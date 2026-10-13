@@ -8,10 +8,9 @@ import { StatusBadge } from "@/components/app/status-badge";
 import { ViewDocumentButton } from "@/components/app/view-document-button";
 import { buttonClass } from "@/components/ui/button";
 import { Card, Notice } from "@/components/ui/primitives";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { SERVICE_BY_SLUG } from "@/lib/content/visa-services";
 import { DOCUMENT_TYPE_LABEL, type ApplicationStatus } from "@/lib/immigration/status";
 import { requireViewer } from "@/lib/auth";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
 
@@ -19,6 +18,7 @@ export const metadata: Metadata = { title: "Application details" };
 
 export default async function ApplicationDetailPage({ params }: PageProps<"/dashboard/applications/[code]">) {
   await requireViewer(); // also stops DB queries when not signed in / not configured
+  const { countryBySlug, serviceBySlug } = await getContent();
   const { code } = await params;
   const supabase = await createClient();
   const { data: app } = await supabase
@@ -34,13 +34,13 @@ export default async function ApplicationDetailPage({ params }: PageProps<"/dash
   ]);
 
   const counsellor = app.counsellor as unknown as { full_name: string; email: string } | null;
-  const service = app.visa_service_slug ? SERVICE_BY_SLUG.get(app.visa_service_slug) : null;
+  const service = app.visa_service_slug ? serviceBySlug.get(app.visa_service_slug) : null;
   const pending = (documents ?? []).filter((d) => ["requested", "reupload_required", "rejected"].includes(d.status));
 
   return (
     <>
       <PageHeader
-        title={`${COUNTRY_BY_SLUG.get(app.destination_country)?.name ?? app.destination_country}${service ? ` · ${service.title}` : ""}`}
+        title={`${countryBySlug.get(app.destination_country)?.name ?? app.destination_country}${service ? ` · ${service.title}` : ""}`}
         description={<>Application <span className="font-mono">{app.code}</span> · opened {formatDate(app.created_at)}</>}
         actions={<StatusBadge status={app.status} />}
       />

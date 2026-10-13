@@ -2,14 +2,14 @@ import { Globe, Mail, Phone, ShieldCheck, Star } from "lucide-react";
 import { Logo } from "@/components/site/logo";
 import { MainNav } from "@/components/site/main-nav";
 import type { NavGroup } from "@/components/site/nav-config";
-import { SERVICE_NAV, VISA_CATEGORIES } from "@/lib/content/categories";
-import { COUNTRIES } from "@/lib/content/countries";
+import { SERVICE_NAV } from "@/lib/content/categories";
+import { getContent } from "@/lib/content/store";
 import { site } from "@/lib/site";
 import { ImmigrationAccountActions } from "./account-actions";
 
-const NAV: NavGroup[] = [
-  { label: "Visa by Country", items: [...COUNTRIES.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })), { href: "/countries", label: "All countries" }] },
-  { label: "Visa by Type", items: [...VISA_CATEGORIES.map((c) => ({ href: `/visa?category=${c.slug}`, label: c.name })), { href: "/visa", label: "All visa services" }] },
+const buildNav = ({ countries, categories }: { countries: { slug: string; name: string }[]; categories: { slug: string; name: string }[] }): NavGroup[] => [
+  { label: "Visa by Country", items: [...countries.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })), { href: "/countries", label: "All countries" }] },
+  { label: "Visa by Type", items: [...categories.map((c) => ({ href: `/visa?category=${c.slug}`, label: c.name })), { href: "/visa", label: "All visa services" }] },
   {
     label: "Our Services",
     items: [
@@ -23,7 +23,8 @@ const NAV: NavGroup[] = [
   { label: "Track Application", href: "/dashboard/applications" },
 ];
 
-export function ImmigrationHeader() {
+export async function ImmigrationHeader() {
+  const nav = buildNav(await getContent());
   return (
     <>
       <div className="bg-brand-900 text-[13px] text-white">
@@ -45,7 +46,7 @@ export function ImmigrationHeader() {
         <div className="mx-auto flex h-[76px] w-full max-w-7xl items-center gap-4 px-4 sm:px-8">
           <Logo height={52} />
           <div className="ml-auto flex items-center">
-            <MainNav groups={NAV} breakpoint="lg" mobileTop={76} />
+            <MainNav groups={nav} breakpoint="lg" mobileTop={76} />
           </div>
           <div className="hidden items-center gap-2 lg:flex xl:gap-3">
             <ImmigrationAccountActions />

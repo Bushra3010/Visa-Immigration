@@ -6,7 +6,7 @@ import { DataTable, Td } from "@/components/app/table";
 import { Input, Select } from "@/components/ui/fields";
 import { updateConsultation } from "@/lib/admin/actions";
 import { requireSection } from "@/lib/auth";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, humanize, toBusinessInput } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ export const metadata: Metadata = { title: "Consultations" };
 
 export default async function AdminConsultationsPage() {
   await requireSection("consultations");
+  const { countryBySlug } = await getContent();
   const supabase = await createClient();
   const { data } = await supabase
     .from("consultations")
@@ -30,7 +31,7 @@ export default async function AdminConsultationsPage() {
             <Td className="text-xs"><p className="font-medium text-sm">{c.full_name}</p>{c.mobile}<br />{c.email}<p className="font-mono text-muted">{c.code}</p></Td>
             <Td className="whitespace-nowrap text-xs">{formatDate(c.preferred_at, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" })}</Td>
             <Td className="text-xs capitalize">{c.consultation_type}</Td>
-            <Td className="text-xs">{COUNTRY_BY_SLUG.get(c.destination_country ?? "")?.name ?? "—"}<br />{c.visa_type ? humanize(c.visa_type) : ""}</Td>
+            <Td className="text-xs">{countryBySlug.get(c.destination_country ?? "")?.name ?? "—"}<br />{c.visa_type ? humanize(c.visa_type) : ""}</Td>
             <Td className="text-xs">{(c.counsellor as unknown as { full_name: string } | null)?.full_name ?? "—"}</Td>
             <Td><StatusBadge status={c.status} /></Td>
             <Td>

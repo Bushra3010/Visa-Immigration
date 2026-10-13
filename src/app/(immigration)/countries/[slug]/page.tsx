@@ -8,24 +8,26 @@ import {
 import { SkylineArt } from "@/components/immigration/skyline-art";
 import { WavingFlag } from "@/components/immigration/waving-flag";
 import { FaqList, JsonLd, faqJsonLd } from "@/components/site/content-blocks";
-import { COUNTRIES, COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { servicesForCountry } from "@/lib/content/visa-services";
+import { getContent } from "@/lib/content/store";
 import { site } from "@/lib/site";
 
-export const dynamicParams = false;
+// Countries added in the CMS after the build render on first visit.
+export const dynamicParams = true;
 
-export function generateStaticParams() {
-  return COUNTRIES.map((c) => ({ slug: c.slug }));
+export async function generateStaticParams() {
+  return (await getContent()).countries.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/countries/[slug]">): Promise<Metadata> {
-  const country = COUNTRY_BY_SLUG.get((await params).slug);
+  const country = (await getContent()).countryBySlug.get((await params).slug);
   if (!country) return {};
+  const title = country.seo?.title ?? `${country.name} Immigration — Visas, PR, Study & Work`;
+  const description = country.seo?.description ?? `${country.tagline} Explore ${country.name} immigration options, eligibility, required documents and FAQs.`;
   return {
-    title: `${country.name} Immigration — Visas, PR, Study & Work`,
-    description: `${country.tagline} Explore ${country.name} immigration options, eligibility, required documents and FAQs.`,
+    title,
+    description,
     alternates: { canonical: `/countries/${country.slug}` },
-    openGraph: { title: `${country.name} Immigration`, description: country.tagline },
+    openGraph: { title: country.seo?.title ?? `${country.name} Immigration`, description: country.seo?.description ?? country.tagline },
   };
 }
 
@@ -102,7 +104,8 @@ function InfoCard({ icon: Icon, text, link, decoration = false }: { icon: Lucide
 }
 
 export default async function CountryPage({ params }: PageProps<"/countries/[slug]">) {
-  const country = COUNTRY_BY_SLUG.get((await params).slug);
+  const { countryBySlug, servicesForCountry } = await getContent();
+  const country = countryBySlug.get((await params).slug);
   if (!country) notFound();
   const services = servicesForCountry(country.slug);
   const q = (visa?: string) => `?country=${country.slug}${visa ? `&visa=${visa}` : ""}`;
@@ -126,7 +129,7 @@ export default async function CountryPage({ params }: PageProps<"/countries/[slu
       {/* Hero */}
       <section className="relative overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element -- decorative background */}
-        <img src="/Images/hero.png" alt="" aria-hidden className="absolute inset-0 size-full object-cover object-[55%_50%]" />
+        <img src={country.image ?? "/Images/hero.png"} alt="" aria-hidden className="absolute inset-0 size-full object-cover object-[55%_50%]" />
         <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-[#0b2419]/90 via-[#0b2419]/55 to-transparent" />
         <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-4 pb-12 pt-9 sm:px-8 lg:grid-cols-[1fr_380px]">
           <div className="text-white">

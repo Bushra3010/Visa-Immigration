@@ -1,8 +1,6 @@
-import { VISA_CATEGORIES } from "@/lib/content/categories";
-import { COUNTRIES } from "@/lib/content/countries";
+// Destination countries and visa types come from the CMS: see getContent() in src/lib/content/store.ts.
 
-export const COUNTRY_OPTIONS = COUNTRIES.map((c) => ({ value: c.slug, label: c.name }));
-export const VISA_TYPE_OPTIONS = VISA_CATEGORIES.map((c) => ({ value: c.slug, label: c.name }));
+export type Option = { value: string; label: string };
 
 export const OBJECTIVE_OPTIONS = [
   { value: "study", label: "Study" },

@@ -1,13 +1,14 @@
 import Link from "next/link";
-import { COUNTRIES } from "@/lib/content/countries";
 import { SERVICE_NAV } from "@/lib/content/categories";
+import { getContent } from "@/lib/content/store";
 import { site } from "@/lib/site";
 import { Container } from "@/components/ui/primitives";
 import { Logo } from "./logo";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const { countries } = await getContent();
   const columns = [
-    { title: "Destinations", links: COUNTRIES.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })) },
+    { title: "Destinations", links: countries.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })) },
     { title: "Visa services", links: [...SERVICE_NAV.map((s) => ({ href: s.href, label: s.label })), { href: "/visa", label: "All services" }] },
     { title: "Travel", links: [{ href: "/flights", label: "Flights" }, { href: "/hotels", label: "Hotels" }, { href: "/flight-hotel", label: "Flight + Hotel" }] },
     {

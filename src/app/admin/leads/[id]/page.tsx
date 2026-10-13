@@ -7,9 +7,8 @@ import { Field, Input, Select, Textarea } from "@/components/ui/fields";
 import { Card } from "@/components/ui/primitives";
 import { convertLeadToApplication, updateLead } from "@/lib/admin/actions";
 import { requireSection } from "@/lib/auth";
-import { COUNTRY_BY_SLUG } from "@/lib/content/countries";
-import { servicesForCountry } from "@/lib/content/visa-services";
 import { LEAD_STATUSES } from "@/lib/immigration/status";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, humanize, toBusinessInput } from "@/lib/utils";
 
@@ -18,6 +17,7 @@ export const metadata: Metadata = { title: "Lead" };
 
 export default async function LeadDetailPage({ params }: PageProps<"/admin/leads/[id]">) {
   const viewer = await requireSection("leads");
+  const { countryBySlug, servicesForCountry } = await getContent();
   const { id } = await params;
   const supabase = await createClient();
   const { data: lead } = await supabase.from("leads").select("*").eq("id", id).maybeSingle();
@@ -46,7 +46,7 @@ export default async function LeadDetailPage({ params }: PageProps<"/admin/leads
             <div><p className="text-muted">Email</p><a href={`mailto:${lead.email}`} className="text-brand-600">{lead.email}</a></div>
             <div><p className="text-muted">Mobile</p><a href={`tel:${lead.mobile}`} className="text-brand-600">{lead.mobile}</a></div>
             <div><p className="text-muted">Residence</p>{lead.country_of_residence ?? "—"}</div>
-            <div><p className="text-muted">Destination</p>{COUNTRY_BY_SLUG.get(lead.destination_country ?? "")?.name ?? "—"}</div>
+            <div><p className="text-muted">Destination</p>{countryBySlug.get(lead.destination_country ?? "")?.name ?? "—"}</div>
             <div><p className="text-muted">Visa type</p>{lead.visa_type ? humanize(lead.visa_type) : "—"}</div>
             <div><p className="text-muted">Indicative score</p>{lead.eligibility_score ?? "—"}</div>
             <div><p className="text-muted">Last contacted</p>{lead.last_contacted_at ? formatDate(lead.last_contacted_at) : "Never"}</div>

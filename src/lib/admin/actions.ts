@@ -3,11 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { getViewer, type Viewer } from "@/lib/auth";
+import { audit, authorize, blank, DENIED, FAILED } from "@/lib/admin/guard";
 import { fieldErrorsFrom, type FormState } from "@/lib/forms";
 import { APPLICATION_STATUSES, DOCUMENT_TYPES, LEAD_STATUSES } from "@/lib/immigration/status";
 import { notify, notifyInApp } from "@/lib/notifications";
-import { canAccess, ROLES, type AdminSection } from "@/lib/roles";
+import { ROLES } from "@/lib/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { fromBusinessInput } from "@/lib/utils";
@@ -20,20 +20,6 @@ import { fromBusinessInput } from "@/lib/utils";
  */
 
 type Ok = FormState;
-const DENIED: Ok = { status: "error", message: "You don't have permission to do that." };
-const FAILED: Ok = { status: "error", message: "Could not save changes. Please try again." };
-
-async function authorize(section: AdminSection): Promise<Viewer | null> {
-  const viewer = await getViewer();
-  return viewer && canAccess(viewer.role, section) ? viewer : null;
-}
-
-async function audit(actor: Viewer, action: string, entity: string, entityId: string, changes?: unknown) {
-  const { error } = await createAdminClient().from("audit_logs").insert({ actor_id: actor.id, action, entity, entity_id: entityId, changes });
-  if (error) console.error("Audit log failed", error);
-}
-
-const blank = (v: FormDataEntryValue | null) => (v === null || v === "" ? undefined : String(v));
 const dateTime = z.string().regex(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/).optional();
 
 // ---------------------------------------------------------------------------

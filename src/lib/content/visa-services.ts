@@ -1,4 +1,4 @@
-import type { Faq } from "./countries";
+import type { Faq, Seo } from "./countries";
 
 /**
  * Visa service pages (PRD §6.2). PLACEHOLDER COPY — see note in countries.ts.
@@ -17,6 +17,9 @@ export type VisaService = {
   processing: string;
   notes: string[];
   faqs: Faq[];
+  seo?: Seo;
+  /** Public URL of the CMS hero photo. */
+  image?: string;
 };
 
 const STANDARD_PROCESS = [

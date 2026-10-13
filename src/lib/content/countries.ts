@@ -2,12 +2,16 @@
  * Country landing-page content (PRD §6.1).
  *
  * PLACEHOLDER COPY: final country list and immigration content must be
- * supplied/approved by the business (PRD §15) and will move into the CMS
- * tables (`countries`). Wording is intentionally general — no fees, quotas
+ * supplied/approved by the business (PRD §15). The live site reads the
+ * `countries` table via src/lib/content/store.ts; this file is the starting
+ * copy imported from Admin → Content and the fallback when Supabase is absent. Wording is intentionally general — no fees, quotas
  * or processing times are asserted here because they change frequently.
  */
 
 export type Faq = { question: string; answer: string };
+
+/** Optional per-page overrides set in the CMS; pages fall back to generated copy. */
+export type Seo = { title?: string; description?: string };
 
 export type Country = {
   slug: string;
@@ -26,6 +30,9 @@ export type Country = {
   documents: string[];
   processing: string;
   faqs: Faq[];
+  seo?: Seo;
+  /** Public URL of the CMS photo (hero background and destination cards). */
+  image?: string;
 };
 
 const COMMON_DOCUMENTS = [

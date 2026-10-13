@@ -7,14 +7,16 @@ import { Field, Input, Select, Textarea } from "@/components/ui/fields";
 import { Notice } from "@/components/ui/primitives";
 import { idleState } from "@/lib/forms";
 import { bookConsultation } from "@/lib/leads/actions";
-import { COUNTRY_OPTIONS, VISA_TYPE_OPTIONS } from "@/lib/leads/options";
+import type { Option } from "@/lib/leads/options";
 import { todayPlus } from "@/lib/utils";
 import { Honeypot } from "./honeypot";
 import { SuccessPanel } from "./success-panel";
 
 const TIMES = ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
-export function ConsultationForm({ defaultCountry, defaultVisa }: { defaultCountry?: string; defaultVisa?: string }) {
+export function ConsultationForm({ countryOptions, visaTypeOptions, defaultCountry, defaultVisa }: {
+  countryOptions: Option[]; visaTypeOptions: Option[]; defaultCountry?: string; defaultVisa?: string;
+}) {
   const [state, action, pending] = useActionState(bookConsultation, idleState);
   const err = (k: string) => (state.status === "error" ? state.fieldErrors?.[k] : undefined);
 
@@ -46,13 +48,13 @@ export function ConsultationForm({ defaultCountry, defaultVisa }: { defaultCount
       <Field label="Destination country" htmlFor="country" required error={err("country")}>
         <Select id="country" name="country" defaultValue={defaultCountry ?? ""} aria-invalid={!!err("country")}>
           <option value="">Select…</option>
-          {COUNTRY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          {countryOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </Select>
       </Field>
       <Field label="Visa type" htmlFor="visaType" required error={err("visaType")}>
         <Select id="visaType" name="visaType" defaultValue={defaultVisa ?? ""} aria-invalid={!!err("visaType")}>
           <option value="">Select…</option>
-          {VISA_TYPE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          {visaTypeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </Select>
       </Field>
       <Field label="Preferred date" htmlFor="preferredDate" required error={err("preferredDate")}>

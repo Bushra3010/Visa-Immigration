@@ -8,8 +8,7 @@ import { DestinationCarousel } from "@/components/immigration/destination-carous
 import { PassportArt } from "@/components/immigration/passport-art";
 import { VisaFinder } from "@/components/immigration/visa-finder";
 import { CountryFlag } from "@/components/site/country-flag";
-import { VISA_CATEGORIES } from "@/lib/content/categories";
-import { COUNTRIES, COUNTRY_BY_SLUG } from "@/lib/content/countries";
+import { getContent } from "@/lib/content/store";
 import { countryPhoto } from "@/lib/content/country-photos";
 import { POPULAR_VISAS } from "@/lib/content/popular-visas";
 import { formatMoney } from "@/lib/utils";
@@ -60,9 +59,10 @@ const ASSURANCES: { icon: LucideIcon; title: string; text: string }[] = [
 ];
 
 
-export default function ImmigrationPage() {
-  const countryOptions = COUNTRIES.map((c) => ({ value: c.slug, label: c.name, hint: c.region }));
-  const categoryOptions = VISA_CATEGORIES.map((c) => ({ value: c.slug, label: c.name }));
+export default async function ImmigrationPage() {
+  const { countries, categories, countryBySlug } = await getContent();
+  const countryOptions = countries.map((c) => ({ value: c.slug, label: c.name, hint: c.region }));
+  const categoryOptions = categories.map((c) => ({ value: c.slug, label: c.name }));
 
   return (
     <div className="bg-white text-ink">
@@ -117,9 +117,9 @@ export default function ImmigrationPage() {
         <div className="mt-6">
           <DestinationCarousel>
             {POPULAR_VISAS.map((v) => {
-              const country = COUNTRY_BY_SLUG.get(v.countrySlug);
+              const country = countryBySlug.get(v.countrySlug);
               if (!country) return null;
-              const photo = countryPhoto(v.countrySlug);
+              const photo = country.image ?? countryPhoto(v.countrySlug);
               return (
                 <li key={v.countrySlug} className="w-[46%] shrink-0 snap-start sm:w-[31%] md:w-[23%] lg:w-[calc((100%-7*16px)/8)] lg:min-w-[128px]">
                   <Link href={`/countries/${country.slug}`} className="group block h-full overflow-hidden rounded-lg border border-line bg-white shadow-sm transition hover:shadow-md">

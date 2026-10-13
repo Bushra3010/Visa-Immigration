@@ -103,7 +103,12 @@ credentials from env vars inside the adapter. Nothing else changes.
   convert to application), applications (status, remarks, next action, document requests,
   review), document review queue, consultations, users & roles, counsellors
   (specialisations + performance), travel bookings + search logs, API management,
-  markup rules, payments, CMS overview, immigration/travel/financial reports with CSV export.
+  markup rules, payments, immigration/travel/financial reports with CSV export.
+- CMS (Admin → Content): create / edit / delete / publish country pages, visa service pages
+  and visa categories, with image uploads (public `cms-media` bucket). Public pages, nav,
+  footer, forms and sitemap read the CMS tables via `src/lib/content/store.ts` (cached, expired
+  on every save). The files in `src/lib/content` are the one-click import source and the
+  fallback when Supabase isn't configured.
 
 ### Sandbox stand-ins (pending Phase 2 commercial decisions, PRD §17)
 
@@ -119,8 +124,7 @@ The site currently runs on this demo data. Once live suppliers / a payment gatew
 
 ### Next up
 
-- CMS editing screens (tables exist) and switching public pages to read from them; blog,
-  testimonials, banners/offers, per-page SEO fields; site search.
+- CMS screens for blog, testimonials and banners/offers (tables exist); site search.
 - **Direct-to-storage uploads** via signed upload URLs — serverless request bodies are capped
   (≈4.5 MB on Vercel, 6 MB on Netlify), so large scans will fail through server actions in production.
 - Malware scanning of uploads; field-level encryption for passport numbers.

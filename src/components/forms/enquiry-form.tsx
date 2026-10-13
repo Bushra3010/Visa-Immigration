@@ -6,11 +6,11 @@ import { Field, Input, Select, Textarea } from "@/components/ui/fields";
 import { Notice } from "@/components/ui/primitives";
 import { idleState } from "@/lib/forms";
 import { submitEnquiry } from "@/lib/leads/actions";
-import { COUNTRY_OPTIONS } from "@/lib/leads/options";
+import type { Option } from "@/lib/leads/options";
 import { Honeypot } from "./honeypot";
 import { SuccessPanel } from "./success-panel";
 
-export function EnquiryForm() {
+export function EnquiryForm({ countryOptions }: { countryOptions: Option[] }) {
   const [state, action, pending] = useActionState(submitEnquiry, idleState);
   const err = (k: string) => (state.status === "error" ? state.fieldErrors?.[k] : undefined);
 
@@ -28,7 +28,7 @@ export function EnquiryForm() {
       <Field label="Interested in (optional)" htmlFor="e-country">
         <Select id="e-country" name="country" defaultValue="">
           <option value="">Any destination</option>
-          {COUNTRY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          {countryOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </Select>
       </Field>
       <Field label="Message" htmlFor="e-message" required error={err("message")} className="sm:col-span-2"><Textarea id="e-message" name="message" rows={4} /></Field>

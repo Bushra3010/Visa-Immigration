@@ -5,14 +5,14 @@ import { Input } from "@/components/ui/fields";
 import { Card, EmptyState } from "@/components/ui/primitives";
 import { updateCounsellor } from "@/lib/admin/actions";
 import { requireSection } from "@/lib/auth";
-import { VISA_CATEGORIES } from "@/lib/content/categories";
-import { COUNTRIES } from "@/lib/content/countries";
+import { getContent } from "@/lib/content/store";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Counsellors" };
 
 export default async function CounsellorsPage() {
   await requireSection("counsellors");
+  const { countries, categories } = await getContent();
   const supabase = await createClient();
   const { data: counsellors } = await supabase
     .from("counsellors")
@@ -48,10 +48,10 @@ export default async function CounsellorsPage() {
               <ActionForm action={updateCounsellor} submitLabel="Save">
                 <input type="hidden" name="profileId" value={c.profile_id} />
                 <fieldset><legend className="text-sm font-medium">Countries</legend>
-                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">{COUNTRIES.map((co) => <label key={co.slug} className="flex items-center gap-1.5 text-sm"><input type="checkbox" name="countries" value={co.slug} defaultChecked={c.countries.includes(co.slug)} className="accent-brand-600" />{co.name}</label>)}</div>
+                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">{countries.map((co) => <label key={co.slug} className="flex items-center gap-1.5 text-sm"><input type="checkbox" name="countries" value={co.slug} defaultChecked={c.countries.includes(co.slug)} className="accent-brand-600" />{co.name}</label>)}</div>
                 </fieldset>
                 <fieldset><legend className="text-sm font-medium">Visa categories</legend>
-                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">{VISA_CATEGORIES.map((v) => <label key={v.slug} className="flex items-center gap-1.5 text-sm"><input type="checkbox" name="visaCategories" value={v.slug} defaultChecked={c.visa_categories.includes(v.slug)} className="accent-brand-600" />{v.name}</label>)}</div>
+                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">{categories.map((v) => <label key={v.slug} className="flex items-center gap-1.5 text-sm"><input type="checkbox" name="visaCategories" value={v.slug} defaultChecked={c.visa_categories.includes(v.slug)} className="accent-brand-600" />{v.name}</label>)}</div>
                 </fieldset>
                 <div className="grid gap-2 sm:grid-cols-2">
                   <label className="text-sm">Lead locations (comma separated)<Input name="locations" defaultValue={c.locations.join(", ")} /></label>

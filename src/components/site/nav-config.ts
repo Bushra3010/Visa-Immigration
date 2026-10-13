@@ -1,10 +1,9 @@
-import { COUNTRIES } from "@/lib/content/countries";
 import { SERVICE_NAV } from "@/lib/content/categories";
 
 export type NavGroup = { label: string; href?: string; items?: { href: string; label: string; description?: string }[] };
 
-/** Primary navigation (PRD §5.1), grouped so it fits on one row. */
-export const NAV: NavGroup[] = [
+/** Primary navigation (PRD §5.1), grouped so it fits on one row. Countries come from the CMS. */
+export const buildNav = (countries: { slug: string; name: string }[]): NavGroup[] => [
   {
     label: "Immigration",
     items: [
@@ -15,7 +14,7 @@ export const NAV: NavGroup[] = [
   },
   {
     label: "Countries",
-    items: [...COUNTRIES.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })), { href: "/countries", label: "All destinations" }],
+    items: [...countries.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })), { href: "/countries", label: "All destinations" }],
   },
   {
     label: "Travel",

@@ -9,7 +9,7 @@ type Action = (prev: FormState, formData: FormData) => Promise<FormState>;
 
 /** Generic wrapper so server-rendered admin forms get pending + result state. */
 export function ActionForm({ action, submitLabel, children, className, variant = "primary" }: {
-  action: Action; submitLabel: string; children: ReactNode; className?: string; variant?: "primary" | "secondary" | "accent" | "danger";
+  action: Action; submitLabel: string; children?: ReactNode; className?: string; variant?: "primary" | "secondary" | "accent" | "danger";
 }) {
   const [state, formAction, pending] = useActionState(action, idleState);
 

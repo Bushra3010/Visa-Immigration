@@ -23,8 +23,19 @@ export async function SiteFooter() {
     },
   ];
   return (
-    <footer className="mt-auto border-t border-line bg-brand-900 text-brand-100">
-      <Container className="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-5">
+    <footer className="mt-auto border-t border-line bg-brand-900 text-brand-100 max-md:border-0 max-md:bg-pine-800">
+      {/* Phone footer */}
+      <div className="px-6 pb-8 pt-9 text-white md:hidden">
+        <p className="font-display text-[22px] font-bold">NewVisa</p>
+        <p className="mt-2 text-[12.5px] text-white/90">Your next chapter starts here.</p>
+        <nav aria-label="Footer" className="mt-8 flex gap-1.5 text-[11px] font-semibold tracking-wide">
+          <Link href="/about">ABOUT</Link>
+          <Link href="/contact">CONTACT</Link>
+          <Link href="/faqs">FAQs</Link>
+        </nav>
+        <p className="mt-10 text-[10px] text-white/75">Visa decisions are made by the relevant government authorities.</p>
+      </div>
+      <Container className="hidden gap-10 md:grid py-12 sm:grid-cols-2 lg:grid-cols-5">
         <div>
           <Logo tile height={56} className="w-fit" />
           <p className="mt-2 text-sm text-brand-200">{site.description}</p>
@@ -41,7 +52,7 @@ export async function SiteFooter() {
           </div>
         ))}
       </Container>
-      <Container className="border-t border-brand-700 py-6 text-xs text-brand-200">
+      <Container className="hidden border-t border-brand-700 py-6 md:block text-xs text-brand-200">
         © {new Date().getFullYear()} {site.name}. Visa decisions are made solely by the relevant government authorities.
       </Container>
     </footer>

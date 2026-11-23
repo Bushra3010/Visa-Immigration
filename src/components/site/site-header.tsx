@@ -12,7 +12,7 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line/70 bg-white">
       <div className="mx-auto flex h-[72px] w-full max-w-[1400px] items-center gap-6 px-4 sm:px-6 2xl:gap-14">
-        <Logo height={58} />
+        <Logo height={58} className="max-md:[&_img]:!h-[46px]" />
         <MainNav groups={buildNav(countries)} />
         <div className="ml-auto hidden items-center gap-6 xl:flex">
           <LocaleSwitcher />

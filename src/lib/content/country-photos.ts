@@ -4,7 +4,12 @@ import path from "node:path";
 
 /** Returns /Images/countries/<slug>.jpg when a photo has been added, else null (cards fall back to the flag). */
 export function countryPhoto(slug: string) {
-  return existsSync(path.join(process.cwd(), "public/Images/countries", `${slug}.jpg`)) ? `/Images/countries/${slug}.jpg` : null;
+  try {
+    return existsSync(path.join(process.cwd(), "public/Images/countries", `${slug}.jpg`)) ? `/Images/countries/${slug}.jpg` : null;
+  } catch {
+    // Runtimes without a real filesystem (e.g. Cloudflare Workers): fall back to the flag.
+    return null;
+  }
 }
 
 export const COUNTRY_SHORT_NAMES: Record<string, string> = { uk: "UK", usa: "USA", uae: "UAE", europe: "Schengen" };

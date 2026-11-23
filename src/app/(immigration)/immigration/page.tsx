@@ -69,7 +69,7 @@ export default async function ImmigrationPage() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element -- decorative background */}
-        <img src="/Images/hero.png" alt="" aria-hidden className="absolute inset-0 size-full object-cover object-[60%_45%]" />
+        <img src="/Images/Desktop%20View%20Hero%20Section%20Image.webp" alt="" aria-hidden className="absolute inset-0 size-full object-cover object-[60%_45%]" />
         <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-[#0b2a22]/90 via-[#0b2a22]/60 to-[#0b2a22]/10" />
         <div className={`relative ${container} grid gap-10 pb-8 pt-12 lg:grid-cols-[640px_1fr] lg:pb-8 lg:pt-12`}>
           <div className="text-white">

@@ -4,6 +4,7 @@
   --font-sans: var(--font-lato), "Lato", system-ui, sans-serif;
   /* Reference codes use the same typeface, with tabular digits. */
   --font-mono: var(--font-lato), "Lato", system-ui, sans-serif;
+  --font-display: var(--font-libre), Georgia, serif;
 }
 
 @theme {
@@ -27,6 +28,14 @@
   --color-accent-50: #eaf3ff;
   --color-accent-500: #0b6fe8;
   --color-accent-600: #0a5ec5;
+
+  /* Phone design palette */
+  --color-pine-900: #173f33;
+  --color-pine-800: #1d4a3c;
+  --color-pine-600: #3a7a5f;
+  --color-sage-200: #cfe0d4;
+  --color-sage-100: #e3ece5;
+  --color-sage-50: #f3f6f2;
 
   --color-success: #1a7f4b;
   --color-warning: #b7791f;

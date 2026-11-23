@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Lato } from "next/font/google";
+import { Libre_Baskerville, Lato } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
 // Single typeface for every page (matches the MakeMyTrip-style design reference).
 // Lato ships 300/400/700/900: Tailwind medium→400, semibold/bold→700, extrabold/black→900.
 const lato = Lato({ variable: "--font-lato", subsets: ["latin"], weight: ["300", "400", "700", "900"], display: "swap" });
+// Serif display face for the phone design's headings.
+const libre = Libre_Baskerville({ variable: "--font-libre", subsets: ["latin"], weight: ["700"], display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${lato.variable} h-full antialiased`}>
+    <html lang="en" className={`${lato.variable} ${libre.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>
   );

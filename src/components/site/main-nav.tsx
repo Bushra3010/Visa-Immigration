@@ -89,11 +89,12 @@ export function MainNav({ groups, breakpoint = "xl", mobileTop = 72 }: { groups:
         </ul>
       </nav>
 
-      <div className={cn("ml-auto flex items-center gap-5", bp.toggle)}>
+      <div className={cn("ml-auto flex items-center gap-3 md:gap-5", bp.toggle)}>
+        <span className="rounded-full bg-sage-100 px-3 py-1.5 text-[11px] font-bold tracking-wide text-pine-800 md:hidden" aria-label="Currency INR, language English">INR · EN</span>
         <Link
           href="/dashboard/notifications"
           aria-label={me?.signedIn && me.unreadNotifications > 0 ? `Notifications, ${me.unreadNotifications} unread` : "Notifications"}
-          className="relative p-1 text-ink"
+          className="relative hidden p-1 text-ink md:block"
         >
           <Bell className="size-7" strokeWidth={1.6} />
           {me?.signedIn && me.unreadNotifications > 0 && (
@@ -102,7 +103,7 @@ export function MainNav({ groups, breakpoint = "xl", mobileTop = 72 }: { groups:
         </Link>
         <button
           type="button"
-          className="grid size-12 place-items-center rounded-full bg-brand-50 text-ink"
+          className="grid size-11 place-items-center rounded-full bg-sage-100 text-pine-800 md:size-12 md:bg-brand-50 md:text-ink"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen(!mobileOpen)}

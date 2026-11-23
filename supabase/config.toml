@@ -3,8 +3,10 @@
 project_id = "Visa-Immigration"
 
 [auth]
-site_url = "https://newvisa.visa-immigration-travel-platform.workers.dev"
+site_url = "https://newvisa.io"
 additional_redirect_urls = [
+  "https://newvisa.io/**",
+  "https://www.newvisa.io/**",
   "https://newvisa.visa-immigration-travel-platform.workers.dev/auth/confirm",
   "http://localhost:3000/auth/confirm",
 ]

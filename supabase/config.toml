@@ -1,0 +1,15 @@
+# Supabase project config, used by the Supabase GitHub integration
+# (pushes to main deploy supabase/migrations to the production project).
+project_id = "Visa-Immigration"
+
+[auth]
+site_url = "https://newvisa.visa-immigration-travel-platform.workers.dev"
+additional_redirect_urls = [
+  "https://newvisa.visa-immigration-travel-platform.workers.dev/auth/confirm",
+  "http://localhost:3000/auth/confirm",
+]
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true

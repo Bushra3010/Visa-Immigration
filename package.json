@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -33,6 +34,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "^16.4.6",
+    "patch-package": "^8.0.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.11",

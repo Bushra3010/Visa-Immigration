@@ -97,11 +97,11 @@ export async function convertLeadToApplication(_prev: Ok, formData: FormData): P
   if (!lead) return DENIED;
 
   let userId = lead.user_id;
-  if (!userId) {
+  if (!userId && lead.email) {
     const { data: profile } = await createAdminClient().from("profiles").select("id").eq("email", lead.email.toLowerCase()).maybeSingle();
     userId = profile?.id ?? null;
   }
-  if (!userId) return { status: "error", message: `${lead.full_name} needs to register with ${lead.email} before an application can be opened.` };
+  if (!userId) return { status: "error", message: lead.email ? `${lead.full_name} needs to register with ${lead.email} before an application can be opened.` : `${lead.full_name} has no email on file. Add one in the CRM, then ask them to register.` };
   if (!lead.destination_country) return { status: "error", message: "Set the lead's destination country first." };
 
   // Counsellors create applications through the admin client, scoped to their own lead (checked above via RLS read).

@@ -22,6 +22,7 @@ const NAV: { href: string; label: string; section: AdminSection; exact?: boolean
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const viewer = await requireViewer("/admin");
   if (viewer.role === "customer") redirect("/dashboard");
+  if (viewer.role === "crm_staff") redirect("/crm");
   const nav = NAV.filter((n) => canAccess(viewer.role, n.section));
   return <AppShell viewer={viewer} nav={nav} title="Admin">{children}</AppShell>;
 }

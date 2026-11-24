@@ -32,7 +32,7 @@ export async function login(_prev: FormState, formData: FormData): Promise<FormS
     await supabase.auth.signOut();
     return { status: "error", message: "This account has been disabled. Please contact support." };
   }
-  const fallback = profile && profile.role !== "customer" ? "/admin" : "/dashboard";
+  const fallback = profile?.role === "crm_staff" ? "/crm" : profile && profile.role !== "customer" ? "/admin" : "/dashboard";
   redirect(safeNext(formData.get("next"), fallback));
 }
 

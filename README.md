@@ -133,3 +133,12 @@ The site currently runs on this demo data. Once live suppliers / a payment gatew
 - Generated Supabase TypeScript types (`supabase gen types`) to replace inline casts.
 - Scheduled jobs: follow-up and appointment reminders.
 - E2E tests (Playwright) against a seeded Supabase instance.
+
+## Visa Consultancy CRM (`/crm`)
+
+Staff-only CRM inside the same app (no public sign-up). Sign in at `/crm/login` with a username or email.
+
+- **Setup:** apply `supabase/migrations/20261126000001…3` (SQL editor or `supabase db push`). Existing platform `super_admin` accounts become CRM Super Admins; or run `node scripts/crm-create-super-admin.mjs --email … --username …` (prompts for the password).
+- **Modules:** dashboard, leads (duplicate detection, notes/calls/WhatsApp log), Kanban pipeline with configurable stages, follow-ups & tasks, converted customers with payments and printable receipts, visa applications with status history, private document storage with verification, expenses with approval workflow, reports with Excel/CSV/PDF export, users, roles & module-wise permissions, settings, audit log.
+- **Security:** Supabase Auth (hashed passwords, sessions); RBAC in `crm_roles` / `crm_role_permissions` enforced by RLS (`crm_can()`, `crm_in_scope()`) as well as in server actions and the UI; files in the private `crm-documents` bucket are served only via short-lived signed URLs after an RLS check; every change is written to `audit_logs`.
+- **Code:** `src/app/crm`, `src/components/crm`, `src/lib/crm` (actions, permissions, reports, xlsx writer).

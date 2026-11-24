@@ -46,6 +46,6 @@ export async function requireViewer(next = "/dashboard") {
 
 export async function requireSection(section: AdminSection) {
   const viewer = await requireViewer(`/admin`);
-  if (!canAccess(viewer.role, section)) redirect(viewer.role === "customer" ? "/dashboard" : "/admin");
+  if (!canAccess(viewer.role, section)) redirect(viewer.role === "customer" ? "/dashboard" : viewer.role === "crm_staff" ? "/crm" : "/admin");
   return viewer;
 }

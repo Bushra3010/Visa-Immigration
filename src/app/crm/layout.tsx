@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function CrmRootLayout({ children }: LayoutProps<"/crm">) {
-  return <ToastProvider>{children}</ToastProvider>;
+  return <ToastProvider><div className="crm-app contents">{children}</div></ToastProvider>;
 }

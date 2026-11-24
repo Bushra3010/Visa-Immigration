@@ -81,3 +81,18 @@ button, input, select, textarea {
   from { transform: translateX(0); }
   to { transform: translateX(calc(-50% - 6px)); }
 }
+
+/* CRM: consistent select chevron (native arrows sit far right on wide selects). */
+.crm-app select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b7686' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.55rem center;
+  background-size: 1rem;
+  padding-right: 1.9rem !important;
+  text-overflow: ellipsis;
+}
+.crm-app select:disabled { opacity: 0.6; }
+/* Filter bars: selects size to their content instead of the longest option. */
+.crm-filters select { max-width: 14rem; }

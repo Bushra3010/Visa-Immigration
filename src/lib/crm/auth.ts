@@ -34,21 +34,24 @@ export const getCrmViewer = cache(async (): Promise<CrmViewer | null> => {
   await connection();
   if (!isSupabaseConfigured()) return null;
   const supabase = await createClient();
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) return null;
+  // Verified locally against the project's signing keys (no Auth round trip).
+  const { data: auth } = await supabase.auth.getClaims();
+  const userId = auth?.claims?.sub;
+  if (!userId) return null;
 
+  // Profile, role and permissions in a single request.
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, full_name, email, crm_username, avatar_url, designation, is_active, crm_active, crm_role_id, role:crm_roles!profiles_crm_role_id_fkey(id, key, name, is_super, data_scope)")
-    .eq("id", auth.user.id)
+    .select("id, full_name, email, crm_username, avatar_url, designation, is_active, crm_active, crm_role_id, role:crm_roles!profiles_crm_role_id_fkey(id, key, name, is_super, data_scope, perms:crm_role_permissions(permission))")
+    .eq("id", userId)
     .maybeSingle();
-  const role = profile?.role as unknown as RoleRow | null;
+  const role = profile?.role as unknown as (RoleRow & { perms: { permission: string }[] }) | null;
   if (!profile || !profile.is_active || !profile.crm_active || !role) return null;
 
-  const { data: perms } = await supabase.from("crm_role_permissions").select("permission").eq("role_id", role.id);
+  const perms = role.perms ?? [];
   return {
     id: profile.id,
-    email: profile.email ?? auth.user.email ?? null,
+    email: profile.email ?? (auth.claims.email as string | undefined) ?? null,
     fullName: profile.full_name || profile.email || "CRM user",
     username: profile.crm_username,
     avatarUrl: profile.avatar_url,
@@ -58,7 +61,7 @@ export const getCrmViewer = cache(async (): Promise<CrmViewer | null> => {
     roleName: role.name,
     isSuper: role.is_super,
     scope: role.is_super ? "all" : role.data_scope,
-    permissions: (perms ?? []).map((p) => p.permission as string),
+    permissions: perms.map((p) => p.permission),
   };
 });
 

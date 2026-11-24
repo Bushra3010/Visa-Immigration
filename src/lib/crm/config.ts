@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export type Stage = {
   id: string; key: string; name: string; color: string; sort_order: number;
@@ -35,9 +35,31 @@ const KINDS: OptionKind[] = ["lead_source", "visa_category", "destination_countr
 
 const titleCase = (v: string) => v.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
-/** CRM configuration (stages, option lists, settings, staff). Loaded once per request through the user's RLS client. */
+/**
+ * Stages, option lists, settings and the staff list are identical for every
+ * CRM user and change rarely, so they're kept in memory for a short time
+ * instead of costing ~5 database requests on every page. Only call this after
+ * requireCrm()/crmAuthorize(). Mutations call invalidateCrmConfig(); other
+ * server instances pick up changes within CONFIG_TTL_MS.
+ */
+const CONFIG_TTL_MS = 30_000;
+// Holds resolved data only (Workers can't share in-flight I/O between requests).
+let configCache: { at: number; value: CrmConfig } | null = null;
+
+export function invalidateCrmConfig() {
+  configCache = null;
+}
+
+/** CRM configuration, cached per request and briefly per server instance. */
 export const getCrmConfig = cache(async (): Promise<CrmConfig> => {
-  const supabase = await createClient();
+  if (configCache && Date.now() - configCache.at < CONFIG_TTL_MS) return configCache.value;
+  const value = await loadCrmConfig();
+  configCache = { at: Date.now(), value };
+  return value;
+});
+
+async function loadCrmConfig(): Promise<CrmConfig> {
+  const supabase = createAdminClient();
   const [stages, options, fields, settings, staff] = await Promise.all([
     supabase.from("crm_lead_stages").select("id, key, name, color, sort_order, is_default, is_won, is_lost, is_active, legacy_status").order("sort_order"),
     supabase.from("crm_options").select("id, kind, key, label, color, sort_order, is_active").order("sort_order"),
@@ -71,7 +93,7 @@ export const getCrmConfig = cache(async (): Promise<CrmConfig> => {
     currency: (settingMap.get("currency") as string) || "INR",
     notifications: (settingMap.get("notifications") as NotificationPrefs) ?? {},
   };
-});
+}
 
 /** Active staff for assignment pickers. */
 export function assignableStaff(config: CrmConfig) {

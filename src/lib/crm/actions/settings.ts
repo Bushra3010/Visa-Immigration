@@ -5,10 +5,12 @@ import { z } from "zod";
 import { fieldErrorsFrom, type FormState } from "@/lib/forms";
 import { createClient } from "@/lib/supabase/server";
 import { crmAudit, crmAuthorize, dbErrorMessage, DENIED, FAILED, INVALID } from "../auth";
+import { invalidateCrmConfig } from "../config";
 import { storePublicImage } from "../files";
 import { formValues, hexColor, optEmail, optText, reqText } from "../schemas";
 
 const done = (message: string): FormState => {
+  invalidateCrmConfig();
   revalidatePath("/crm", "layout");
   return { status: "success", message };
 };

@@ -247,7 +247,7 @@ export function KV({ items, cols = 3 }: { items: { label: string; value: ReactNo
 
 export function FilterBar({ children, action }: { children: ReactNode; action: string }) {
   return (
-    <form action={action} className="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-white p-3 shadow-xs print:hidden">
+    <form action={action} className="crm-filters mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-white p-3 shadow-xs print:hidden">
       {children}
     </form>
   );

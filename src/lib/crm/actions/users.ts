@@ -6,6 +6,7 @@ import { z } from "zod";
 import { fieldErrorsFrom, type FormState } from "@/lib/forms";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { crmAudit, crmAuthorize, DENIED, diff, FAILED, INVALID } from "../auth";
+import { invalidateCrmConfig } from "../config";
 import { storePublicImage } from "../files";
 import { flash } from "../flash";
 import { ALL_PERMISSION_KEYS } from "../permissions";
@@ -103,6 +104,7 @@ export async function createStaffUser(_prev: FormState, formData: FormData): Pro
     return FAILED;
   }
   await crmAudit(viewer, "user.created", "users", userId, { email, role: role.key, username: d.crm_username, attached_existing_account: attached });
+  invalidateCrmConfig();
   revalidatePath("/crm/users");
   await flash(attached ? `CRM access granted to ${d.full_name} (existing account — their current password still applies).` : `${d.full_name} can now sign in as “${d.crm_username}”.`);
   redirect(`/crm/users/${userId}`);
@@ -142,6 +144,7 @@ export async function updateStaffUser(_prev: FormState, formData: FormData): Pro
   if (error) return FAILED;
   if (changes.crm_role_id) await crmAudit(viewer, "permission.role_assigned", "users", id.data, { from: oldRole?.key, to: newRole.key });
   await crmAudit(viewer, changes.crm_active ? (crm_active === "active" ? "user.activated" : "user.deactivated") : "user.updated", "users", id.data, changes);
+  invalidateCrmConfig();
   revalidatePath("/crm/users");
   return { status: "success", message: "User updated." };
 }
@@ -216,6 +219,7 @@ export async function saveRolePermissions(_prev: FormState, formData: FormData):
   if (added.length || removed.length || role.data_scope !== parsed.data.data_scope) {
     await crmAudit(viewer, "permission.changed", "settings", id.data, { role: role.name, added, removed, data_scope: { from: role.data_scope, to: parsed.data.data_scope } });
   }
+  invalidateCrmConfig();
   revalidatePath("/crm/roles");
   return { status: "success", message: `Saved — ${added.length} granted, ${removed.length} revoked.` };
 }

@@ -5,7 +5,7 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { env, isSupabaseConfigured } from "@/lib/env";
 import { mediaUrl } from "./media";
 import { VISA_CATEGORIES, type VisaCategory } from "./categories";
-import { COUNTRIES, type Country, type Faq, type Seo } from "./countries";
+import { COUNTRIES, COUNTRY_BY_SLUG, type Country, type Faq, type Seo } from "./countries";
 import { VISA_SERVICES, type VisaService } from "./visa-services";
 
 /**
@@ -41,7 +41,8 @@ export function toCountry(r: CountryRow): Country {
   return {
     slug: r.slug,
     name: r.name,
-    isoCode: r.iso_code ?? "",
+    // Rows created without a flag code (e.g. seed data) fall back to the bundled country's code.
+    isoCode: r.iso_code || COUNTRY_BY_SLUG.get(r.slug)?.isoCode || "",
     region: r.region ?? "",
     tagline: r.summary ?? "",
     why: strs(c.why),

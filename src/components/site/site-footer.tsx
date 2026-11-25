@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SERVICE_NAV } from "@/lib/content/categories";
 import { getContent } from "@/lib/content/store";
-import { site } from "@/lib/site";
+import { site, siteAddress } from "@/lib/site";
 import { Container } from "@/components/ui/primitives";
 import { Logo } from "./logo";
 
@@ -33,13 +33,25 @@ export async function SiteFooter() {
           <Link href="/contact">CONTACT</Link>
           <Link href="/faqs">FAQs</Link>
         </nav>
-        <p className="mt-10 text-[10px] text-white/75">Visa decisions are made by the relevant government authorities.</p>
+        <address className="mt-6 text-[11px] not-italic leading-relaxed text-white/85">
+          {siteAddress}<br />
+          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a> · <a href={`tel:${site.contact.phone.replace(/\s/g, "")}`}>{site.contact.phone}</a>
+        </address>
+        <p className="mt-6 text-[10px] leading-relaxed text-white/75">
+          {site.business.tradeName} · Proprietor {site.business.proprietor}<br />
+          GSTIN {site.business.gstin} · Udyam {site.business.udyam}
+        </p>
+        <p className="mt-3 text-[10px] text-white/75">Visa decisions are made by the relevant government authorities.</p>
       </div>
       <Container className="hidden gap-10 md:grid py-12 sm:grid-cols-2 lg:grid-cols-5">
         <div>
           <Logo tile height={56} className="w-fit" />
           <p className="mt-2 text-sm text-brand-200">{site.description}</p>
-          <p className="mt-4 text-sm">{site.contact.email}<br />{site.contact.phone}</p>
+          <address className="mt-4 text-sm not-italic">
+            {siteAddress}<br />
+            <a href={`mailto:${site.contact.email}`} className="hover:text-white">{site.contact.email}</a><br />
+            <a href={`tel:${site.contact.phone.replace(/\s/g, "")}`} className="hover:text-white">{site.contact.phone}</a>
+          </address>
         </div>
         {columns.map((col) => (
           <div key={col.title}>
@@ -53,7 +65,8 @@ export async function SiteFooter() {
         ))}
       </Container>
       <Container className="hidden border-t border-brand-700 py-6 md:block text-xs text-brand-200">
-        © {new Date().getFullYear()} {site.name}. Visa decisions are made solely by the relevant government authorities.
+        <p>© {new Date().getFullYear()} {site.business.tradeName} (Proprietor: {site.business.proprietor}). Visa decisions are made solely by the relevant government authorities.</p>
+        <p className="mt-1">GSTIN {site.business.gstin} · Udyam {site.business.udyam}</p>
       </Container>
     </footer>
   );

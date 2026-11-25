@@ -14,15 +14,15 @@ insert into public.visa_categories (slug, name, sort_order) values
   ('job-seeker', 'Job Seeker Visa', 10)
 on conflict (slug) do nothing;
 
-insert into public.countries (slug, name, region, sort_order, is_published) values
-  ('canada', 'Canada', 'North America', 1, true),
-  ('australia', 'Australia', 'Oceania', 2, true),
-  ('uk', 'United Kingdom', 'Europe', 3, true),
-  ('usa', 'United States', 'North America', 4, true),
-  ('germany', 'Germany', 'Europe', 5, true),
-  ('new-zealand', 'New Zealand', 'Oceania', 6, true),
-  ('uae', 'Dubai / UAE', 'Middle East', 7, true),
-  ('europe', 'Europe (Schengen)', 'Europe', 8, true)
+insert into public.countries (slug, name, region, iso_code, sort_order, is_published) values
+  ('canada', 'Canada', 'North America', 'CA', 1, true),
+  ('australia', 'Australia', 'Oceania', 'AU', 2, true),
+  ('uk', 'United Kingdom', 'Europe', 'GB', 3, true),
+  ('usa', 'United States', 'North America', 'US', 4, true),
+  ('germany', 'Germany', 'Europe', 'DE', 5, true),
+  ('new-zealand', 'New Zealand', 'Oceania', 'NZ', 6, true),
+  ('uae', 'Dubai / UAE', 'Middle East', 'AE', 7, true),
+  ('europe', 'Europe (Schengen)', 'Europe', 'EU', 8, true)
 on conflict (slug) do nothing;
 
 insert into public.supplier_configs (product, provider, environment, is_active, priority, settings) values

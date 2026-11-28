@@ -6,6 +6,7 @@ import { SERVICE_NAV } from "@/lib/content/categories";
 import { getContent } from "@/lib/content/store";
 import { site } from "@/lib/site";
 import { ImmigrationAccountActions } from "./account-actions";
+import { TRAVEL_ENABLED } from "@/lib/features";
 
 const buildNav = ({ countries, categories }: { countries: { slug: string; name: string }[]; categories: { slug: string; name: string }[] }): NavGroup[] => [
   { label: "Visa by Country", items: [...countries.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })), { href: "/countries", label: "All countries" }] },
@@ -14,9 +15,13 @@ const buildNav = ({ countries, categories }: { countries: { slug: string; name: 
     label: "Our Services",
     items: [
       ...SERVICE_NAV.map((s) => ({ href: s.href, label: s.label })),
-      { href: "/flights", label: "Flight Booking" },
-      { href: "/hotels", label: "Hotel Booking" },
-      { href: "/flight-hotel", label: "Flight + Hotel" },
+      ...(TRAVEL_ENABLED
+        ? [
+            { href: "/flights", label: "Flight Booking" },
+            { href: "/hotels", label: "Hotel Booking" },
+            { href: "/flight-hotel", label: "Flight + Hotel" },
+          ]
+        : []),
     ],
   },
   { label: "Resources", items: [{ href: "/faqs", label: "FAQs" }, { href: "/about", label: "About Us" }, { href: "/contact", label: "Contact Us" }] },

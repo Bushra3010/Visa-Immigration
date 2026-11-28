@@ -7,6 +7,7 @@ import {
 import { DestinationRail } from "@/components/site/destination-rail";
 import { OffersSection } from "@/components/site/offers-section";
 import { TravelSearch } from "@/components/travel/travel-search";
+import { TRAVEL_ENABLED } from "@/lib/features";
 import { getContent } from "@/lib/content/store";
 import { countryPhoto } from "@/lib/content/country-photos";
 import { MobileHome } from "@/components/site/mobile-home";
@@ -50,7 +51,7 @@ export default async function HomePage() {
     <div className="hidden bg-[#f2f4f7] pb-10 md:block md:pb-16">
       <section className="relative">
         {/* Background grows with the hero copy and continues 72px behind the search card. */}
-        <div className="relative pb-7 md:pb-[72px]">
+        <div className={`relative pb-7 ${TRAVEL_ENABLED ? "md:pb-[72px]" : "md:pb-12"}`}>
           <div aria-hidden className="absolute inset-0 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element -- decorative background, SVG or photo */}
           <img src={HERO_IMAGE} alt="" className="size-full object-cover object-[center_40%]" />
@@ -59,18 +60,26 @@ export default async function HomePage() {
           <div className={`relative ${shell} pb-5 pt-7 md:pt-[38px]`}>
           <div className="hidden items-start gap-8 md:grid lg:grid-cols-[1fr_538px]">
             <div className="text-white">
-              <p className="text-[15px] font-medium uppercase tracking-wide text-white/90">Visa • Immigration • Travel</p>
+              <p className="text-[15px] font-medium uppercase tracking-wide text-white/90">{TRAVEL_ENABLED ? "Visa • Immigration • Travel" : "Visa • Immigration"}</p>
               <h1 className="mt-3 text-[40px] font-bold leading-[1.1] tracking-[-0.01em] sm:text-[48px]">Your Journey Abroad Starts Here</h1>
               <p className="mt-3 max-w-[500px] text-[18px] leading-[1.45] text-white/95">
-                Explore visa options by country, check your eligibility, work with a dedicated counsellor, and book your flights and hotels — all from one platform.
+                {TRAVEL_ENABLED
+                  ? "Explore visa options by country, check your eligibility, work with a dedicated counsellor, and book your flights and hotels — all from one platform."
+                  : "Explore visa options by country, check your eligibility and work with a dedicated counsellor — from your first question to your visa decision."}
               </p>
               <div className="mt-6 flex flex-wrap gap-5">
                 <Link href="/immigration" className="flex h-[48px] items-center gap-3 rounded-md border border-white/40 bg-brand-600 px-5 text-[16px] font-semibold hover:bg-brand-700">
                   <IdCard className="size-5" strokeWidth={1.8} /> Explore Visa &amp; Immigration
                 </Link>
-                <Link href="#book" className="flex h-[48px] items-center gap-3 rounded-md bg-white px-5 text-[16px] font-semibold text-ink hover:bg-white/90">
-                  <PlaneTakeoff className="size-5" strokeWidth={1.8} /> Book Flights &amp; Hotels
-                </Link>
+                {TRAVEL_ENABLED ? (
+                  <Link href="#book" className="flex h-[48px] items-center gap-3 rounded-md bg-white px-5 text-[16px] font-semibold text-ink hover:bg-white/90">
+                    <PlaneTakeoff className="size-5" strokeWidth={1.8} /> Book Flights &amp; Hotels
+                  </Link>
+                ) : (
+                  <Link href="/eligibility" className="flex h-[48px] items-center gap-3 rounded-md bg-white px-5 text-[16px] font-semibold text-ink hover:bg-white/90">
+                    <ClipboardCheck className="size-5" strokeWidth={1.8} /> Get Free Assessment
+                  </Link>
+                )}
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-4 text-[15px] font-medium">
                 <Link href="/eligibility" className="flex items-center gap-2 hover:underline"><span className="underline underline-offset-2">Check</span> your eligibility <ArrowRight className="size-4" /></Link>
@@ -92,11 +101,13 @@ export default async function HomePage() {
 
           </div>
         </div>
-        <div className={`relative -mt-3 ${shell} md:-mt-[72px]`}>
-          <div id="book" className="scroll-mt-24">
-            <TravelSearch />
+        {TRAVEL_ENABLED && (
+          <div className={`relative -mt-3 ${shell} md:-mt-[72px]`}>
+            <div id="book" className="scroll-mt-24">
+              <TravelSearch />
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
       <div className={shell}>

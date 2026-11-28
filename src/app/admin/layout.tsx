@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { TRAVEL_ENABLED } from "@/lib/features";
 import { AppShell } from "@/components/app/app-shell";
 import { requireViewer } from "@/lib/auth";
 import { canAccess, type AdminSection } from "@/lib/roles";
@@ -19,10 +20,13 @@ const NAV: { href: string; label: string; section: AdminSection; exact?: boolean
   { href: "/admin/reports", label: "Reports", section: "reports" },
 ];
 
+// Admin areas that only exist for flight and hotel booking.
+const TRAVEL_SECTIONS = new Set<AdminSection>(["travel", "markup", "suppliers"]);
+
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const viewer = await requireViewer("/admin");
   if (viewer.role === "customer") redirect("/dashboard");
   if (viewer.role === "crm_staff") redirect("/crm");
-  const nav = NAV.filter((n) => canAccess(viewer.role, n.section));
+  const nav = NAV.filter((n) => canAccess(viewer.role, n.section) && (TRAVEL_ENABLED || !TRAVEL_SECTIONS.has(n.section)));
   return <AppShell viewer={viewer} nav={nav} title="Admin">{children}</AppShell>;
 }

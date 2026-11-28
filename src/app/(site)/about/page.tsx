@@ -9,11 +9,11 @@ export const metadata: Metadata = { title: "About Us", description: `About ${sit
 export default function AboutPage() {
   return (
     <>
-      <PageHero eyebrow="About us" title={`About ${site.name}`} description="Immigration consultancy and travel booking, brought together in one place." />
+      <PageHero eyebrow="About us" title={`About ${site.name}`} description="Visa and immigration consultancy, from your first eligibility check to your final decision." />
       <Section>
         <Container className="max-w-3xl space-y-6 text-ink-soft">
           <p>We help students, professionals, families and businesses explore opportunities abroad — from the first eligibility check through to the day they fly.</p>
-          <CheckList items={["Dedicated counsellors by destination", "Secure online document uploads", "Real-time application tracking", "Flights and hotels booked in the same account"]} />
+          <CheckList items={["Dedicated counsellors by destination", "Secure online document uploads", "Real-time application tracking", "Guidance at every step of your application"]} />
 
           <section aria-labelledby="business-details" className="rounded-xl border border-line bg-white p-6">
             <h2 id="business-details" className="text-lg font-semibold text-ink">Business details</h2>

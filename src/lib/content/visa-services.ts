@@ -28,7 +28,7 @@ const STANDARD_PROCESS = [
   { title: "Document collection", description: "Upload documents securely from your dashboard; our documentation team verifies them." },
   { title: "Application preparation", description: "We prepare and review your application for completeness." },
   { title: "Submission & tracking", description: "Your application is submitted and you can track every status update online." },
-  { title: "Decision & travel", description: "Once approved, plan your journey and book flights and hotels from your dashboard." },
+  { title: "Decision", description: "We share the decision with you and guide you on next steps before you travel." },
 ];
 
 const PROCESSING = "Processing time depends on the authority's current workload and your individual case. Your counsellor will share the latest official estimate.";

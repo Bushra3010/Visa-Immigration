@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app/app-shell";
+import { TRAVEL_ENABLED } from "@/lib/features";
 import { requireViewer } from "@/lib/auth";
 
 const NAV = [
@@ -6,7 +7,7 @@ const NAV = [
   { href: "/dashboard/applications", label: "My Applications" },
   { href: "/dashboard/documents", label: "Documents" },
   { href: "/dashboard/consultations", label: "Consultations" },
-  { href: "/dashboard/bookings", label: "Flight & Hotel Bookings" },
+  ...(TRAVEL_ENABLED ? [{ href: "/dashboard/bookings", label: "Flight & Hotel Bookings" }] : []),
   { href: "/dashboard/payments", label: "Payments" },
   { href: "/dashboard/messages", label: "Messages" },
   { href: "/dashboard/notifications", label: "Notifications" },

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TRAVEL_ENABLED } from "@/lib/features";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ApplicationTimeline } from "@/components/app/application-timeline";
@@ -47,12 +48,14 @@ export default async function ApplicationDetailPage({ params }: PageProps<"/dash
 
       {(app.ready_to_travel || app.status === "approved") && (
         <Notice tone="success" className="mb-6">
-          <p className="font-semibold">Your visa process is complete. Plan your journey</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link href={`/flights?application=${app.id}`} className={buttonClass("accent", "sm")}>Book flight</Link>
-            <Link href={`/hotels?application=${app.id}`} className={buttonClass("secondary", "sm")}>Book hotel</Link>
-            <Link href="/flight-hotel" className={buttonClass("ghost", "sm")}>View travel options</Link>
-          </div>
+          <p className="font-semibold">{TRAVEL_ENABLED ? "Your visa process is complete. Plan your journey" : "Your visa process is complete"}</p>
+          {TRAVEL_ENABLED && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link href={`/flights?application=${app.id}`} className={buttonClass("accent", "sm")}>Book flight</Link>
+              <Link href={`/hotels?application=${app.id}`} className={buttonClass("secondary", "sm")}>Book hotel</Link>
+              <Link href="/flight-hotel" className={buttonClass("ghost", "sm")}>View travel options</Link>
+            </div>
+          )}
         </Notice>
       )}
 

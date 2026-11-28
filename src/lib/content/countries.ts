@@ -57,8 +57,8 @@ const commonFaqs = (name: string): Faq[] => [
     answer: "Take our free online eligibility assessment. A counsellor reviews your profile and contacts you with suitable options.",
   },
   {
-    question: "Can I book my flights and hotel through you after approval?",
-    answer: "Yes. Once your visa is approved you can book flights and hotels directly from your dashboard.",
+    question: "How will I know when there's an update on my application?",
+    answer: "Every status change appears in your dashboard, and your counsellor contacts you whenever something is needed from you.",
   },
 ];
 

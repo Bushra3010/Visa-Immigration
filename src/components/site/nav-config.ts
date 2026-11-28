@@ -1,4 +1,5 @@
 import { SERVICE_NAV } from "@/lib/content/categories";
+import { TRAVEL_ENABLED } from "@/lib/features";
 
 export type NavGroup = { label: string; href?: string; items?: { href: string; label: string; description?: string }[] };
 
@@ -16,14 +17,16 @@ export const buildNav = (countries: { slug: string; name: string }[]): NavGroup[
     label: "Countries",
     items: [...countries.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })), { href: "/countries", label: "All destinations" }],
   },
-  {
-    label: "Travel",
-    items: [
-      { href: "/flights", label: "Flight Booking" },
-      { href: "/hotels", label: "Hotel Booking" },
-      { href: "/flight-hotel", label: "Flight + Hotel" },
-    ],
-  },
+  ...(TRAVEL_ENABLED
+    ? [{
+        label: "Travel",
+        items: [
+          { href: "/flights", label: "Flight Booking" },
+          { href: "/hotels", label: "Hotel Booking" },
+          { href: "/flight-hotel", label: "Flight + Hotel" },
+        ],
+      }]
+    : []),
   { label: "About Us", href: "/about" },
   { label: "FAQs", href: "/faqs" },
   { label: "Contact Us", href: "/contact" },

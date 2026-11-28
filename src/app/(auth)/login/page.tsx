@@ -12,7 +12,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
     <>
       <h1 className="text-2xl font-semibold">Welcome back</h1>
-      <p className="mt-1 text-sm text-muted">Log in to track applications and manage bookings.</p>
+      <p className="mt-1 text-sm text-muted">Log in to track your applications and documents.</p>
       {error === "link" && <Notice tone="danger" className="mt-4">That link is invalid or has expired.</Notice>}
       {!isSupabaseConfigured() && (
         <Notice tone="brand" className="mt-4">

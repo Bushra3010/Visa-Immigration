@@ -1,9 +1,11 @@
+import { TRAVEL_ENABLED } from "@/lib/features";
 import { NextResponse, type NextRequest } from "next/server";
 import { rateLimit } from "@/lib/security/rate-limit";
 import { hotelSearchSchema } from "@/lib/travel/schemas";
 import { searchHotels } from "@/lib/travel/service";
 
 export async function POST(request: NextRequest) {
+  if (!TRAVEL_ENABLED) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (!(await rateLimit("hotel-search", 30, 60_000)).ok) {
     return NextResponse.json({ error: "Too many searches, please slow down" }, { status: 429 });
   }

@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { countries, services } = await getContent();
   const url = (path: string) => `${site.url}${path}`;
-  const staticPages = ["", "/immigration", "/countries", "/visa", "/eligibility", "/consultation", "/flights", "/hotels", "/flight-hotel", "/about", "/contact", "/faqs"];
+  const staticPages = ["", "/immigration", "/countries", "/visa", "/eligibility", "/consultation", "/about", "/contact", "/faqs"];
   return [
     ...staticPages.map((p) => ({ url: url(p), changeFrequency: "weekly" as const, priority: p === "" ? 1 : 0.7 })),
     ...SERVICE_NAV.map((s) => ({ url: url(s.href), changeFrequency: "monthly" as const, priority: 0.7 })),

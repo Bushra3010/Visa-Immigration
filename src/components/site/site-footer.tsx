@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SERVICE_NAV } from "@/lib/content/categories";
 import { getContent } from "@/lib/content/store";
+import { TRAVEL_ENABLED } from "@/lib/features";
 import { site, siteAddress } from "@/lib/site";
 import { Container } from "@/components/ui/primitives";
 import { Logo } from "./logo";
@@ -10,7 +11,7 @@ export async function SiteFooter() {
   const columns = [
     { title: "Destinations", links: countries.map((c) => ({ href: `/countries/${c.slug}`, label: c.name })) },
     { title: "Visa services", links: [...SERVICE_NAV.map((s) => ({ href: s.href, label: s.label })), { href: "/visa", label: "All services" }] },
-    { title: "Travel", links: [{ href: "/flights", label: "Flights" }, { href: "/hotels", label: "Hotels" }, { href: "/flight-hotel", label: "Flight + Hotel" }] },
+    ...(TRAVEL_ENABLED ? [{ title: "Travel", links: [{ href: "/flights", label: "Flights" }, { href: "/hotels", label: "Hotels" }, { href: "/flight-hotel", label: "Flight + Hotel" }] }] : []),
     {
       title: "Company",
       links: [

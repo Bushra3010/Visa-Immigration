@@ -1,7 +1,9 @@
+import { TRAVEL_ENABLED } from "@/lib/features";
 import { NextResponse, type NextRequest } from "next/server";
 import { searchHotelDestinations, searchPlaces } from "@/lib/travel/service";
 
 export async function GET(request: NextRequest) {
+  if (!TRAVEL_ENABLED) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const q = (request.nextUrl.searchParams.get("q") ?? "").slice(0, 60);
   const type = request.nextUrl.searchParams.get("type") === "hotel" ? "hotel" : "airport";
   try {

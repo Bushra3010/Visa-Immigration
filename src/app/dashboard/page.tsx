@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TRAVEL_ENABLED } from "@/lib/features";
 import Link from "next/link";
 import { PlaneTakeoff } from "lucide-react";
 import { PageHeader } from "@/components/app/app-shell";
@@ -30,7 +31,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
 
   return (
     <>
-      <PageHeader title={`Hello${viewer.fullName ? `, ${viewer.fullName.split(" ")[0]}` : ""}`} description="Here's what's happening with your applications and trips." />
+      <PageHeader title={`Hello${viewer.fullName ? `, ${viewer.fullName.split(" ")[0]}` : ""}`} description={TRAVEL_ENABLED ? "Here's what's happening with your applications and trips." : "Here's what's happening with your applications."} />
       {passwordUpdated && <Notice tone="success" className="mb-4">Your password has been updated.</Notice>}
 
       {readyToTravel.map((a) => (
@@ -38,15 +39,17 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
           <div className="flex items-center gap-3">
             <PlaneTakeoff className="size-8" />
             <div>
-              <p className="text-lg font-semibold">Your visa process is complete. Plan your journey</p>
+              <p className="text-lg font-semibold">{TRAVEL_ENABLED ? "Your visa process is complete. Plan your journey" : "Your visa process is complete"}</p>
               <p className="text-sm text-brand-100">Application {a.code} · {countryBySlug.get(a.destination_country)?.name ?? a.destination_country}</p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Link href={`/flights?application=${a.id}`} className={buttonClass("accent", "sm")}>Book flight</Link>
-            <Link href={`/hotels?application=${a.id}`} className={buttonClass("secondary", "sm")}>Book hotel</Link>
-            <Link href="/flight-hotel" className="rounded-lg px-3 py-1.5 text-sm font-medium text-white underline-offset-4 hover:underline">View travel options</Link>
-          </div>
+          {TRAVEL_ENABLED && (
+            <div className="flex flex-wrap gap-2">
+              <Link href={`/flights?application=${a.id}`} className={buttonClass("accent", "sm")}>Book flight</Link>
+              <Link href={`/hotels?application=${a.id}`} className={buttonClass("secondary", "sm")}>Book hotel</Link>
+              <Link href="/flight-hotel" className="rounded-lg px-3 py-1.5 text-sm font-medium text-white underline-offset-4 hover:underline">View travel options</Link>
+            </div>
+          )}
         </div>
       ))}
 
@@ -54,7 +57,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
         <StatCard label="Active applications" value={(apps.data ?? []).filter((a) => !["approved", "rejected", "withdrawn"].includes(a.status)).length} />
         <StatCard label="Documents needed" value={docs.data?.length ?? 0} hint={docs.data?.length ? <Link className="text-brand-600" href="/dashboard/documents">Upload now →</Link> : "All caught up"} />
         <StatCard label="Upcoming consultations" value={consultations.data?.length ?? 0} />
-        <StatCard label="Trips booked" value={bookings.data?.length ?? 0} />
+        {TRAVEL_ENABLED && <StatCard label="Trips booked" value={bookings.data?.length ?? 0} />}
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -93,7 +96,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
               </Card>
             ) : <EmptyState title="No upcoming consultations" action={<Link href="/consultation" className={buttonClass("secondary", "sm")}>Book consultation</Link>} />}
           </div>
-          <div>
+          {TRAVEL_ENABLED && <div>
             <div className="mb-3 flex items-center justify-between"><h2 className="font-semibold">Recent bookings</h2><Link href="/dashboard/bookings" className="text-sm text-brand-600">View all</Link></div>
             {bookings.data?.length ? (
               <Card className="divide-y divide-line">
@@ -105,7 +108,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
                 ))}
               </Card>
             ) : <EmptyState title="No bookings yet" action={<Link href="/flights" className={buttonClass("secondary", "sm")}>Search flights</Link>} />}
-          </div>
+          </div>}
         </section>
       </div>
     </>

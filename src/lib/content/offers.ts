@@ -1,3 +1,5 @@
+import { TRAVEL_ENABLED } from "@/lib/features";
+
 /**
  * Homepage offers (design placeholders). Replace with real, approved offers
  * before launch — every discount shown to customers must be honoured.
@@ -34,3 +36,9 @@ export const OFFERS: Offer[] = [
   { id: "free-assessment", category: "visa", tag: "VISA", title: "Free Eligibility Assessment", description: "Check your eligibility and get matched with a counsellor.", href: "/eligibility", tone: "from-green-600 via-green-400 to-lime-200" },
   { id: "consultation", category: "visa", tag: "IMMIGRATION", title: "Talk to a Visa Counsellor", description: "Book a phone, video or office consultation.", href: "/consultation", tone: "from-emerald-700 via-emerald-500 to-teal-200" },
 ];
+
+const TRAVEL_OFFER_CATEGORIES = new Set<string>(["flights", "hotels", "package"]);
+
+/** Offers and tabs shown on the site (travel ones are hidden while TRAVEL_ENABLED is off). */
+export const VISIBLE_OFFERS = TRAVEL_ENABLED ? OFFERS : OFFERS.filter((o) => !TRAVEL_OFFER_CATEGORIES.has(o.category));
+export const VISIBLE_OFFER_TABS = TRAVEL_ENABLED ? OFFER_TABS : OFFER_TABS.filter((t) => !TRAVEL_OFFER_CATEGORIES.has(t.id));

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { TRAVEL_ENABLED } from "@/lib/features";
 import { FaqList, JsonLd, PageHero, faqJsonLd } from "@/components/site/content-blocks";
 import { CtaBand } from "@/components/site/cta-band";
 import { Container, Section } from "@/components/ui/primitives";
 
-export const metadata: Metadata = { title: "FAQs", description: "Answers to common questions about visas, immigration services and travel bookings.", alternates: { canonical: "/faqs" } };
+export const metadata: Metadata = { title: "FAQs", description: "Answers to common questions about visas and immigration services.", alternates: { canonical: "/faqs" } };
 
 const GROUPS = [
   {
@@ -21,13 +22,15 @@ const GROUPS = [
       { question: "What file types can I upload?", answer: "PDF, JPG, PNG and WebP files up to 10 MB each." },
     ],
   },
-  {
-    title: "Flights & hotels",
-    faqs: [
-      { question: "Where do flight and hotel prices come from?", answer: "Live availability and fares come from our authorised travel suppliers. Prices are rechecked just before you pay." },
-      { question: "How do cancellations and refunds work?", answer: "Cancellation eligibility, fees and refund amounts are set by the airline or hotel's rules and are shown to you before you confirm a cancellation." },
-    ],
-  },
+  ...(TRAVEL_ENABLED
+    ? [{
+        title: "Flights & hotels",
+        faqs: [
+          { question: "Where do flight and hotel prices come from?", answer: "Live availability and fares come from our authorised travel suppliers. Prices are rechecked just before you pay." },
+          { question: "How do cancellations and refunds work?", answer: "Cancellation eligibility, fees and refund amounts are set by the airline or hotel's rules and are shown to you before you confirm a cancellation." },
+        ],
+      }]
+    : []),
 ];
 
 export default function FaqsPage() {

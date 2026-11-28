@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Plane } from "lucide-react";
-import { OFFER_TABS, OFFERS, type Offer, type OfferCategory } from "@/lib/content/offers";
+import { ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Globe, Plane } from "lucide-react";
+import { VISIBLE_OFFER_TABS as OFFER_TABS, VISIBLE_OFFERS as OFFERS, type Offer, type OfferCategory } from "@/lib/content/offers";
 import { cn } from "@/lib/utils";
 
 const VISIBLE_TABS = 8;
@@ -13,7 +13,7 @@ export function OfferCard({ offer }: { offer: Offer }) {
   return (
     <Link href={offer.href} className="flex h-full gap-4 rounded-xl border border-line bg-white p-3 shadow-[0_2px_10px_rgba(15,27,45,0.06)] hover:shadow-md">
       <div className={cn("relative h-[124px] w-[132px] shrink-0 overflow-hidden rounded-lg bg-gradient-to-br", offer.tone)}>
-        {offer.image ? <Image src={offer.image} alt="" fill className="object-cover" sizes="132px" /> : <Plane aria-hidden className="absolute bottom-3 right-3 size-8 text-white/80" strokeWidth={1.4} />}
+        {offer.image ? <Image src={offer.image} alt="" fill className="object-cover" sizes="132px" /> : (offer.category === "visa" ? <Globe aria-hidden className="absolute bottom-3 right-3 size-8 text-white/80" strokeWidth={1.4} /> : <Plane aria-hidden className="absolute bottom-3 right-3 size-8 text-white/80" strokeWidth={1.4} />)}
       </div>
       <div className="flex min-w-0 flex-1 flex-col py-1">
         <div className="flex items-start justify-between gap-2 text-[11px] font-medium uppercase text-ink-soft">
@@ -23,7 +23,7 @@ export function OfferCard({ offer }: { offer: Offer }) {
         <p className="mt-1.5 line-clamp-2 text-[17px] font-bold leading-snug text-ink">{offer.title}</p>
         <span aria-hidden className="my-2 block h-0.5 w-8 rounded bg-danger/70" />
         <p className="line-clamp-2 text-[13px] text-ink-soft">{offer.description}</p>
-        <span className="mt-auto self-end pt-2 text-[13px] font-bold text-accent-500">BOOK NOW</span>
+        <span className="mt-auto self-end pt-2 text-[13px] font-bold text-accent-500">{offer.category === "visa" ? "GET STARTED" : "BOOK NOW"}</span>
       </div>
     </Link>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { TRAVEL_ENABLED } from "@/lib/features";
 import Link from "next/link";
 import { PageHeader } from "@/components/app/app-shell";
 import { StatCard } from "@/components/app/table";
@@ -55,10 +56,10 @@ export default async function AdminDashboard() {
       )}
       {showTravel && (
         <>
-          <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-muted">Travel & finance</h2>
+          <h2 className="mb-3 mt-8 text-sm font-semibold uppercase tracking-wide text-muted">{TRAVEL_ENABLED ? "Travel & finance" : "Finance"}</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard label="Flight bookings" value={flights} />
-            <StatCard label="Hotel bookings" value={hotels} />
+            {TRAVEL_ENABLED && <StatCard label="Flight bookings" value={flights} />}
+            {TRAVEL_ENABLED && <StatCard label="Hotel bookings" value={hotels} />}
             {showFinance && <StatCard label="Revenue collected" value={formatMoney(revenue)} />}
             <StatCard label="Pending payments" value={pendingPayments} />
           </div>

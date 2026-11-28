@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BriefcaseBusiness, Check, Luggage, Plus, School, type LucideIcon } from "lucide-react";
 import { CountryFlag } from "./country-flag";
 import { JourneyPicker } from "./journey-picker";
+import { TRAVEL_ENABLED } from "@/lib/features";
 
 /** Set to a photo path (e.g. "/Images/hero-mobile.jpg") to replace the illustrated hero. */
 const MOBILE_HERO_IMAGE: string | null = "/Images/Mobile%20View%20Hero%20Section%20Image.jpeg";
@@ -31,9 +32,9 @@ export function MobileHome({ destinations }: { destinations: Destination[] }) {
           <HeroArt />
         )}
         <div className="relative">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/90">Visa · Immigration · Travel</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/90">{TRAVEL_ENABLED ? "Visa · Immigration · Travel" : "Visa · Immigration"}</p>
           <h1 className="mt-3 font-display text-[33px] font-bold leading-[1.12] tracking-[-0.01em]">Your journey<br />abroad starts here.</h1>
-          <p className="mt-4 max-w-[260px] text-[14px] leading-[1.5] text-white/95">Visa guidance, expert support and travel booking — all in one place.</p>
+          <p className="mt-4 max-w-[260px] text-[14px] leading-[1.5] text-white/95">{TRAVEL_ENABLED ? "Visa guidance, expert support and travel booking — all in one place." : "Visa guidance and expert support — all in one place."}</p>
           <Link href="/eligibility" className="mt-6 inline-flex h-12 items-center rounded-lg bg-white px-9 text-[14px] font-bold text-pine-900 shadow-sm">
             Check eligibility →
           </Link>
@@ -118,7 +119,7 @@ export function MobileHome({ destinations }: { destinations: Destination[] }) {
         <ul className="mt-5 space-y-5 pl-2.5">
           {[
             { icon: Check, title: "Expert counsellors", sub: "Guidance tailored to your plans" },
-            { icon: Plus, title: "One simple platform", sub: "Visa support and travel booking" },
+            { icon: Plus, title: "One simple platform", sub: TRAVEL_ENABLED ? "Visa support and travel booking" : "Applications, documents and updates" },
           ].map(({ icon: Icon, title, sub }) => (
             <li key={title} className="flex items-center gap-4">
               <span className="grid size-[30px] shrink-0 place-items-center rounded-full bg-sage-100">

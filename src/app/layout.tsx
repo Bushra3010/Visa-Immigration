@@ -11,7 +11,7 @@ const libre = Libre_Baskerville({ variable: "--font-libre", subsets: ["latin"], 
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} — Visa, Immigration & Travel`, template: `%s | ${site.name}` },
+  title: { default: `${site.name} — Visa & Immigration`, template: `%s | ${site.name}` },
   description: site.description,
   openGraph: { siteName: site.name, type: "website" },
 };

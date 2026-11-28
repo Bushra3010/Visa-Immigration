@@ -8,7 +8,7 @@ export const site = {
     email: "newvisallp@gmail.com",
     phone: "+91 81300 91200",
     address: {
-      lines: ["A-7/206-207, 3rd Floor", "Rohini Sector 17"],
+      lines: ["B-7/172, Ground Floor", "Rohini Sector 17"],
       city: "New Delhi",
       postalCode: "110089",
       state: "Delhi",

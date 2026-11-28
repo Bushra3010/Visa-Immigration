@@ -25,6 +25,11 @@ export const site = {
     udyam: "UDYAM-DL-04-0061196",
     enterpriseType: "Micro",
   },
+  /** Official social profiles. */
+  social: {
+    linkedin: "https://www.linkedin.com/company/newvisa-global-odyssey/",
+    instagram: "https://www.instagram.com/newvisa.llp/",
+  },
 };
 
 /** Single-line postal address, e.g. for the footer. */
